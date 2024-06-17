@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 export default function Demo() {
   const router = useRouter();
   useEffect(() => {
-    router.push("/chat");
+    router.push("/chatpage");
   }, []);
 
   return <div>Login page</div>;

@@ -27,6 +27,7 @@ export default async function signUp(email: string, password: string): Promise<S
     return { result, error };
 }
 
+
 // import firebase_app from "../config";
 // import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 

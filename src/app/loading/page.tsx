@@ -1,10 +1,7 @@
-// import { ExternalLink } from '@/components/ui/external-link';
-
 export default function Page() {
   return (
     <div className="prose prose-sm prose-invert max-w-none">
       <h1 className="text-xl font-bold">Instant Loading States</h1>
-
       <ul>
         <li>
           This example has an artificial delay when &quot;fetching&quot; data
@@ -21,15 +18,6 @@ export default function Page() {
           clicking a second category before the first one has loaded.
         </li>
       </ul>
-
-      {/* <div className="flex gap-2">
-        <ExternalLink href="https://nextjs.org/docs/app/building-your-application/routing/loading-ui-and-streaming">
-          Docs
-        </ExternalLink>
-        <ExternalLink href="https://github.com/vercel/app-playground/tree/main/app/loading">
-          Code
-        </ExternalLink>
-      </div> */}
     </div>
   );
 }

@@ -1,17 +1,17 @@
+"use client"
+
 import { useEffect, useState } from "react";
-import { onAuthStateChanged, User} from "@firebase/auth";
-import {auth} from "@/firebase/authentication";
+import { onAuthStateChanged, User } from "@firebase/auth";
+import { auth } from "@/firebase/authentication";
 
+export function useCurrentUser() {
+  const [currentUser, setCurrentUser] = useState<User | null | "loading">("loading");
 
-export function useCurrentUser(){
-    const [currentUser, setCurrentUser]= useState<User | null | "loading">("loading");
+  useEffect(() => {
+    return onAuthStateChanged(auth, (user) => {
+      setCurrentUser(user);
+    });
+  }, []);
 
-    useEffect(()=>{
-        const unsubscribe = onAuthStateChanged(auth, (user:User|null)=>{
-            setCurrentUser(user);
-        });
-        return ()=>unsubscribe();
-    })
-    return currentUser
-
+  return currentUser;
 }

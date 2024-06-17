@@ -1,31 +1,24 @@
 "use client";
-
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import Header from "@/components/header/header.tsx";
 import Menu from "@/components/menu/menu.tsx";
-import ChatService from "@/components/service/ChatService.tsx";
+import Service from "@/components/service/service.tsx";
+
 import { useAuthContext } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { onAuthStateChanged, getAuth, signOut } from "firebase/auth";
 import firebase_app from "@/firebase/config";
-import { ChatContext } from "./page";
-
-interface IMsgDataTypes {
-  roomId: String | number;
-  user: String;
-  msg: String;
-  time: String;
-}
-
 const auth = getAuth(firebase_app);
 
 interface User {
+  // Define the structure of your User object here. For example:
   id: number;
   name: string;
+  // Add other user properties as needed
 }
 
-const ChatPage = () => {
-  let { socket, username, roomId } = useContext(ChatContext);
+
+export default function ChatPage1() {
   const [reduction, setReduction] = useState<boolean | undefined>();
   const { user } = useAuthContext() as { user: User | null };
   const router = useRouter();
@@ -42,37 +35,11 @@ const ChatPage = () => {
       });
   };
 
-  React.useEffect(() => {
-    if (user == null) {
-      router.push("/signin");
-    }
-  }, [user]);
-
-  const [currentMsg, setCurrentMsg] = useState("");
-  const [chat, setChat] = useState<IMsgDataTypes[]>([]);
-
-  const sendData = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (currentMsg !== "") {
-      const msgData: IMsgDataTypes = {
-        roomId,
-        user: username,
-        msg: currentMsg,
-        time:
-          new Date(Date.now()).getHours() +
-          ":" +
-          new Date(Date.now()).getMinutes(),
-      };
-      await socket.emit("send_msg", msgData);
-      setCurrentMsg("");
-    }
-  };
-
-  React.useEffect(() => {
-    socket.on("receive_msg", (data: IMsgDataTypes) => {
-      setChat((pre) => [...pre, data]);
-    });
-  }, [socket]);
+  // React.useEffect(() => {
+  //   if (user == null) {
+  //     router.push("/signin");
+  //   }
+  // }, [user]);
 
   React.useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -101,44 +68,30 @@ const ChatPage = () => {
                 <Menu />
               </div>
               <div className="col-span-2">
-                {socket && username && roomId && (
-                  <ChatService
-                    onScale={() => setReduction(false)}
-                    label="大画面"
-                    scale="scale-100 hover:scale-110"
-                    gap="gap-12"
-                    gap1="gap-2"
-                  />
-                )}
-
-                {/* <ChatService
+                <Service
                   onScale={() => setReduction(false)}
                   label="大画面"
                   scale="scale-100 hover:scale-110"
                   gap="gap-12"
                   gap1="gap-2"
-                /> */}
+                />
               </div>
             </div>
           </>
         ) : (
           <>
             <div className="m-16">
-              {socket && username && roomId && (
-                <ChatService
-                  onScale={() => setReduction(true)}
-                  label="画面を小さくする"
-                  scale="scale-150 hover:scale-160"
-                  gap="gap-20"
-                  gap1="gap-12"
-                />
-              )}
+              <Service
+                onScale={() => setReduction(true)}
+                label="画面を小さくする"
+                scale="scale-150 hover:scale-160"
+                gap="gap-20"
+                gap1="gap-12"
+              />
             </div>
           </>
         )}
       </div>
     </main>
   );
-};
-
-export default ChatPage;
+}
