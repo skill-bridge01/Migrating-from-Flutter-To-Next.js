@@ -169,3 +169,4 @@ export async function verifyUserEmail(user: User): Promise<boolean> {
     return false;
   }
 }
+

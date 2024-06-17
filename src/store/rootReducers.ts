@@ -1,15 +1,15 @@
-import videoReducer from "./video";
-import postsReducer from "./posts";
+import phoneReducer from "./phone";
+import chatReducer from "./chat";
 import userReducer from "./user";
+import userReducer1 from "./user1";
 import buttonReducer from "./button";
-import profileReducer from "./profile";
 
 const rootReducers = {
-  video: videoReducer,
-  posts: postsReducer,
+  phone: phoneReducer,
+  chat: chatReducer,
   user: userReducer,
+  user1: userReducer1,
   button: buttonReducer,
-  profile: profileReducer,
 };
 
 export default rootReducers;

@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../index";
-import { IPhone} from "../../types";
+import { IPhone} from "@/types";
 
 export interface PhoneState {
   phone: IPhone;

@@ -24,6 +24,7 @@ interface User {
   name: string;
 }
 
+// const ChatPage = ({ socket, username, roomId }: any) => {
 const ChatPage = () => {
   let { socket, username, roomId } = useContext(ChatContext);
   const [reduction, setReduction] = useState<boolean | undefined>();

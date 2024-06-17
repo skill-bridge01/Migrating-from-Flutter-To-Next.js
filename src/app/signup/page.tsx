@@ -13,51 +13,20 @@ import { logIn, updateAvatar, updateName, updateNickName } from "@/store/user";
 // import { truncate } from "../../utils";
 import { useMediaQuery } from "react-responsive";
 import React, { FormEvent, ChangeEvent } from "react";
-import signUp from "@/firebase/auth/signup";
+import signUp from "@/firebase/auth/signUp";
 import { FcGoogle } from "react-icons/fc";
-import { signInWithGoole } from "@/firebase/authentication";
+import { signInWithGoole } from "@/firebase/authentication1";
 import { notify } from "@/utils/notify";
 import { useRef } from "react";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { Loading } from "@/components/Loading";
-import signIn from "@/firebase/auth/signin";
 
 const SignUp = () => {
+  const currentUser = useCurrentUser();
   const router = useRouter();
-  // const currentUser = useCurrentUser();
-  
-  // if (currentUser === "loading") {
-  //   return <Loading />;
-  // }
-
-  // if (currentUser) {
-  //   void router.push("/user");
-  // }
-  // // const email1 = useRef<HTMLInputElement>(null);
-  // // const password1 = useRef<HTMLInputElement>(null);
-
-  // async function loginWithGoogle() {
-  //   const response = await signInWithGoole();
-  //   if (response !== true) {
-  //     notify("Something went wrong");
-  //   }
-  // }
-
-  // async function createAnAccont(event: FormEvent<HTMLFormElement>) {
-  //   event.preventDefault();
-  //   if (email1.current && password1.current) {
-  //     const response = await signUp(
-  //       email1.current.value,
-  //       password1.current.value,
-  //     );
-  //     if (!response) {
-  //       notify("Something went wrong");
-  //     }
-  //   }
-  // }
 
   //   const { connected, publicKey, disconnect } = useWallet();
-  const [invalidForm, setInvalidForm, invalidFormRef] = useState(false);
+  const [invalidForm, setInvalidForm, invalidFormRef] = useState(true);
   const [name, setName] = useState("");
   // const [password, setPassword] = useState("");
   const [invalidName, setInvalidName, invalidNameRef] = useState(false);
@@ -74,7 +43,7 @@ const SignUp = () => {
   const handleForm = async (event: FormEvent) => {
     event.preventDefault();
 
-    const { result, error } = await signIn(email, password);
+    const { result, error } = await signUp(email, password);
 
     if (error) {
       return console.log(error);
@@ -215,18 +184,6 @@ const SignUp = () => {
               } font-semibold uppercase text-white opacity-100 z-10 mb-[3px]`}
             >
               ユーザログイン
-              {/* <button onClick={loginWithGoogle}>with Google</button>
-              <div
-                onClick={loginWithGoogle}
-                className="mb-6 flex h-[50px] w-full items-center justify-center gap-2 rounded-xl bg-lightPrimary hover:cursor-pointer dark:bg-navy-800"
-              >
-                <div className="rounded-full text-xl">
-                  <FcGoogle />
-                </div>
-                <h5 className="text-sm font-medium text-navy-700 dark:text-white">
-                  Sign Up with Google
-                </h5>
-              </div> */}
             </div>
 
             <div

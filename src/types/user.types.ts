@@ -16,6 +16,13 @@ export enum EUserStatus {
 }
 
 export type UserStatusStrings = keyof typeof EUserStatus;
+export interface IUser1 {
+  menuImageUrl: string;
+  menuJson: string;
+  phone: string;
+  twoPhaseAuth: boolean;
+  userId: string;
+}
 
 export interface IUser {
   bio: string;
@@ -47,4 +54,9 @@ export interface IPasswordChangeRequest {
 export interface IPhone {
   phone: string;
   verify: boolean;
+}
+export interface IChat {
+  consultation: boolean;
+  menu: boolean;
+  selfCareMenu: boolean;
 }

@@ -1,8 +1,15 @@
-import React, { useContext, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ScaleButton from "@/components/button/scaleButton.tsx";
-import { ChatContext } from "../../app/chat/page";
-import style from "./chat.module.css";
+import { webSocketAPI } from "@/hooks/webSocketAPI";
+// import Slider from "@/components/Slider";
+import EmblaCarousel from "@/components/slider/slider";
+import { EmblaOptionsType } from "embla-carousel";
 
+// Define a TypeScript interface for the message structure
+interface Message {
+  type: "ping" | "chat" | "suggestion" | "question";
+  message: string;
+}
 interface Props {
   onScale: () => void;
   label: string;
@@ -10,44 +17,20 @@ interface Props {
   gap1: string;
   gap: string;
 }
-interface IMsgDataTypes {
-  roomId: String | number;
-  user: String;
-  msg: String;
-  time: String;
-}
+
+const OPTIONS: EmblaOptionsType = {};
+const SLIDE_COUNT = 9;
+const SLIDES = Array.from(Array(SLIDE_COUNT).keys());
+
 // export default Service=({  onLogin }: Props) =>{
-// const Service: React.FC<Props> = ({ onScale, label, scale, gap1, gap,socket, username, roomId }) => {
 const Service: React.FC<Props> = ({ onScale, label, scale, gap1, gap }) => {
-  let { socket, username, roomId } = useContext(ChatContext);
-  const [currentMsg, setCurrentMsg] = useState("");
-  const [chat, setChat] = useState<IMsgDataTypes[]>([]);
-
-  const sendData = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (currentMsg !== "") {
-      const msgData: IMsgDataTypes = {
-        roomId,
-        user: username,
-        msg: currentMsg,
-        time:
-          new Date(Date.now()).getHours() +
-          ":" +
-          new Date(Date.now()).getMinutes(),
-      };
-      await socket.emit("send_msg", msgData);
-      setCurrentMsg("");
-    }
-  };
-
-  React.useEffect(() => {
-    socket.on("receive_msg", (data: IMsgDataTypes) => {
-      setChat((pre) => [...pre, data]);
-    });
-  }, [socket]);
+  const [send, setSend] = useState<boolean>(false);
+  const [message, setMessage] = useState<string>("");
+  const [questions, setQuestions] = useState<string[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   // export default Service: React.FC = () => {
   const [openTab, setOpenTab] = React.useState(1);
-  const [message, setMessage] = React.useState("");
+  // const [message, setMessage] = React.useState("");
   const [consultation, setConsultation] = React.useState(
     <>
       相談内容を選択すると、メッセージが表示されるので、
@@ -59,6 +42,65 @@ const Service: React.FC<Props> = ({ onScale, label, scale, gap1, gap }) => {
       ご送信後、少々おまちください。
     </>,
   );
+  const sendMessage = () => {
+    setSend(true);
+
+    if (message.trim().length > 0) {
+      // Assuming sendMessage accepts a string as message type and a string as the message itself
+      webSocketAPI.sendMessage("message", message);
+      // setQuestions((prevMessages: any) => [...prevMessages, message]);
+      setMessages((prevMessages: any) => [
+        ...prevMessages,
+        { message: message, type: "question" },
+      ]);
+
+      setMessage("");
+    }
+  };
+  // const sendMessage = () => {
+  //   const trimmedMessage = message.trim();
+  //   if (trimmedMessage.length > 0) {
+  //     setQuestion((prevMessages:any) => [...prevMessages, trimmedMessage]);
+  //     setMessage(""); // Optional: Clear the input field after sending
+  //   }
+  // };
+
+  const handleChangeMessage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setMessage(e.target.value);
+    // setMessages({message:e.target.value, type:'question'});
+    // setMessages((prevMessages: any) => [
+    //   ...prevMessages,
+    //   { message: e.target.value, type: "question" },
+    // ]);
+  };
+  useEffect(() => {
+    const handleMessageReceived = (msg: Message) => {
+      setMessages((prevMessages) => [...prevMessages, msg]);
+    };
+
+    // Assign your event handler
+    webSocketAPI.handleMessage = handleMessageReceived;
+    setSend(false);
+  }, [send]);
+  useEffect(() => {
+    const userId =
+      "XwtmjNKXWNdUA_fEEIm64iHIivQYutHeQLq6Tl5aAyiDYsbvDNNlhkyPiqqgJxH3";
+    webSocketAPI.connect(userId);
+
+    // const handleMessageReceived = (msg: Message) => {
+    //   setMessages((prevMessages) => [...prevMessages, msg]);
+    // };
+
+    // // Assign your event handler
+    // webSocketAPI.handleMessage = handleMessageReceived;
+
+    // Cleanup on component unmount
+    // return () => {
+    //   if (webSocketAPI.socket) {
+    //     webSocketAPI.socket.close();
+    //   }
+    // };
+  }, []);
 
   return (
     <div className="border rounded-2xl bg-teal-light w-full flex flex-col items-center justify-center pt-14">
@@ -129,6 +171,219 @@ const Service: React.FC<Props> = ({ onScale, label, scale, gap1, gap }) => {
                       AIがさまざまな問題をサポートいたします。
                     </button>
                     <div className="bg-white rounded-lg px-10">
+                      <div className="h-40"></div>
+                      <div className={"flex items-start " + gap}>
+                        <img
+                          src="/assets/images/bear12.svg"
+                          className={scale}
+                        />
+                        <div className={"flex flex-col " + gap1}>
+                          <div className={"flex " + gap1}>
+                            <img
+                              src="/assets/images/chat1.svg"
+                              className={
+                                scale +
+                                " drop-shadow-3xl cursor-pointer hover:drop-shadow-4xl"
+                              }
+                              onClick={() =>
+                                setConsultation(
+                                  <>
+                                    相談内容 1 :
+                                    <br />
+                                    こんにちは、
+                                    <br />
+                                    ようこそお越しくださいました
+                                    <br />
+                                    ご相談内容をメッセージでお送りください。
+                                  </>,
+                                )
+                              }
+                            />
+                            <img
+                              src="/assets/images/chat2.svg"
+                              className={
+                                scale +
+                                " drop-shadow-3xl cursor-pointer hover:drop-shadow-4xl"
+                              }
+                              onClick={() =>
+                                setConsultation(
+                                  <>
+                                    相談内容 2 :
+                                    <br />
+                                    こんにちは、
+                                    <br />
+                                    ようこそお越しくださいました
+                                    <br />
+                                    ご相談内容をメッセージでお送りください。
+                                  </>,
+                                )
+                              }
+                            />
+                            <img
+                              src="/assets/images/chat3.svg"
+                              className={
+                                scale +
+                                " drop-shadow-3xl cursor-pointer hover:drop-shadow-4xl"
+                              }
+                              onClick={() =>
+                                setConsultation(
+                                  <>
+                                    相談内容 3 :
+                                    <br />
+                                    ご相談内容をメッセージでお送りください。
+                                    <br />
+                                    AIの返信は一度の応答に1分程度掛かりますので、
+                                    <br />
+                                    ご送信後、少々おまちください。
+                                  </>,
+                                )
+                              }
+                            />
+                            <img
+                              src="/assets/images/chat4.svg"
+                              className={
+                                scale +
+                                " drop-shadow-3xl cursor-pointer hover:drop-shadow-4xl"
+                              }
+                              onClick={() =>
+                                setConsultation(
+                                  <>
+                                    相談内容 4 :
+                                    <br />
+                                    ご相談内容をメッセージでお送りください。
+                                    <br />
+                                    AIの返信は一度の応答に1分程度掛かりますので、
+                                    <br />
+                                    ご送信後、少々おまちください。
+                                  </>,
+                                )
+                              }
+                            />
+                            <img
+                              src="/assets/images/chat5.svg"
+                              className={
+                                scale +
+                                " drop-shadow-3xl cursor-pointer hover:drop-shadow-4xl"
+                              }
+                              onClick={() =>
+                                setConsultation(
+                                  <>
+                                    相談内容 5 :
+                                    <br />
+                                    こんにちは、
+                                    <br />
+                                    ようこそお越しくださいました
+                                    <br />
+                                    ご相談内容をメッセージでお送りください。
+                                  </>,
+                                )
+                              }
+                            />
+                          </div>
+                          <div className={"flex " + gap1}>
+                            <img
+                              src="/assets/images/chat6.svg"
+                              className={
+                                scale +
+                                " drop-shadow-3xl cursor-pointer hover:drop-shadow-4xl"
+                              }
+                              onClick={() =>
+                                setConsultation(
+                                  <>
+                                    相談内容 6 :
+                                    <br />
+                                    こんにちは、
+                                    <br />
+                                    ようこそお越しくださいました
+                                    <br />
+                                    ご相談内容をメッセージでお送りください。
+                                  </>,
+                                )
+                              }
+                            />
+                            <img
+                              src="/assets/images/chat7.svg"
+                              className={
+                                scale +
+                                " drop-shadow-3xl cursor-pointer hover:drop-shadow-4xl"
+                              }
+                              onClick={() =>
+                                setConsultation(
+                                  <>
+                                    相談内容 7 :
+                                    <br />
+                                    ご相談内容をメッセージでお送りください。
+                                    <br />
+                                    AIの返信は一度の応答に1分程度掛かりますので、
+                                    <br />
+                                    ご送信後、少々おまちください。
+                                  </>,
+                                )
+                              }
+                            />
+                            <img
+                              src="/assets/images/chat8.svg"
+                              className={
+                                scale +
+                                " drop-shadow-3xl cursor-pointer hover:drop-shadow-4xl"
+                              }
+                              onClick={() =>
+                                setConsultation(
+                                  <>
+                                    相談内容 8 :
+                                    <br />
+                                    ご相談内容をメッセージでお送りください。
+                                    <br />
+                                    AIの返信は一度の応答に1分程度掛かりますので、
+                                    <br />
+                                    ご送信後、少々おまちください。
+                                  </>,
+                                )
+                              }
+                            />
+                            <img
+                              src="/assets/images/chat9.svg"
+                              className={
+                                scale +
+                                " drop-shadow-3xl cursor-pointer hover:drop-shadow-4xl"
+                              }
+                              onClick={() =>
+                                setConsultation(
+                                  <>
+                                    相談内容 9 :
+                                    <br />
+                                    こんにちは、
+                                    <br />
+                                    ようこそお越しくださいました
+                                    <br />
+                                    ご相談内容をメッセージでお送りください。
+                                  </>,
+                                )
+                              }
+                            />
+                            <img
+                              src="/assets/images/chat10.svg"
+                              className={
+                                scale +
+                                " drop-shadow-3xl cursor-pointer hover:drop-shadow-4xl"
+                              }
+                              onClick={() =>
+                                setConsultation(
+                                  <>
+                                    相談内容 10 :
+                                    <br />
+                                    こんにちは、
+                                    <br />
+                                    ようこそお越しくださいました
+                                    <br />
+                                    ご相談内容をメッセージでお送りください。
+                                  </>,
+                                )
+                              }
+                            />
+                          </div>
+                        </div>
+                      </div>
                       <div className={"flex items-center py-16 " + gap}>
                         <img
                           src="/assets/images/bear12.svg"
@@ -144,79 +399,119 @@ const Service: React.FC<Props> = ({ onScale, label, scale, gap1, gap }) => {
                           </div>
                         </div>
                       </div>
-                      {/* socket */}
-                      <div className="px-20">
-                        <div style={{ marginBottom: "1rem" }}>
-                          <p>
-                            <span className="font-bold text-lg">
-                              ユーザー名 :{" "}
-                            </span>{" "}
-                            <b>{username}</b>
-                          </p>
-                          <p>
-                            <span className="font-bold text-lg">
-                              サーバーID :
-                            </span>{" "}
-                            <b>{roomId}</b>
-                          </p>
-                        </div>
-                        <div>
-                          {chat.map(({ roomId, user, msg, time }, key) => (
-                            <div
-                              key={key}
-                              className={
-                                user == username
-                                  ? style.chatProfileRight
-                                  : style.chatProfileLeft
-                              }
-                            >
-                              <span
-                                className={style.chatProfileSpan}
-                                style={{
-                                  textAlign:
-                                    user == username ? "right" : "left",
-                                }}
-                              >
-                                {user.charAt(0)}
-                              </span>
-                              <h3
-                                style={{
-                                  textAlign:
-                                    user == username ? "right" : "left",
-                                }}
-                              >
-                                {msg}
-                              </h3>
-                            </div>
-                          ))}
-                        </div>
-                        {/* <div>
-                          <form onSubmit={(e) => sendData(e)}>
-                            <input
-                              className={style.chat_input}
-                              type="text"
-                              value={currentMsg}
-                              placeholder="メッセージを書く.."
-                              onChange={(e) => setCurrentMsg(e.target.value)}
-                            />
-                            <button className={style.chat_button}>送信</button>
-                          </form>
+                      <div>
+                        {/* <div
+                          style={{ textAlign: "right" }}
+                          className="bg-gray-600 padding-3 rounded-sm"
+                        >
+                          {message}
                         </div> */}
+                        {/* {questions.map((msg, index) => (
+                          <div style={{ textAlign: "right" }} className="p-5">
+                            <span
+                              className="bg-gray-300 p-4 rounded-tl-2xl rounded-bl-2xl rounded-br-2xl text-xl"
+                              key={index}
+                            >
+                              {msg}
+                            </span>
+                          </div>
+                        ))} */}
+                        {/* <div className={"flex items-center py-16 " + gap}>
+                        <img
+                          src="/assets/images/bear12.svg"
+                          className={scale}
+                        />
+                        <div className={"flex flex-col " + gap1}>
+                          <div className={"flex " + gap1}> */}
+
+                        {messages.map(
+                          (msg, index) =>
+                            msg.type !== "ping" && (
+                              <div
+                                style={{ textAlign: "right" }}
+                                className="p-3"
+                              >
+                                {msg.type === "question" && (
+                                  <div
+                                    className={"flex justify-end py-16 " + gap}
+                                  >
+                                    <span
+                                      className="bg-gray-300 p-4 rounded-tl-2xl rounded-bl-2xl rounded-br-2xl text-xl"
+                                      key={index}
+                                    >
+                                      {msg.message}
+                                    </span>
+                                    <img
+                                      src="/assets/images/bear12.svg"
+                                      className={scale}
+                                    />
+                                  </div>
+                                )}
+                                {/* {msg.type === "chat" && msg.type === "suggestion" && (
+                              <div
+                                className="p-5 max-w-[95%]"
+                                style={{ textAlign: "left" }}
+                              >
+                                {msg.type === "chat" && (
+                                  <p className="bg-gray-300 p-4 rounded-tl-2xl rounded-tr-2xl rounded-br-2xl text-xl">
+                                    {msg.message}
+                                  </p>
+                                )}
+                                {msg.type === "suggestion" &&
+                                  msg.message
+                                    .split("。,")
+                                    .map((suggestion, suggestionIndex) => (
+                                      <span
+                                        className="border-4 border-blue-800 p-5 rounded-tl-2xl rounded-bl-2xl rounded-br-2xl text-xl"
+                                        key={suggestionIndex}
+                                      >
+                                        {suggestion}
+                                      </span>
+                                    ))}
+                              </div>
+                            )} */}
+                                {msg.type === "chat" && (
+                                  <div
+                                    className="p-5 max-w-[75%]"
+                                    style={{ textAlign: "left" }}
+                                  >
+                                    <p className="bg-gray-300 p-4 rounded-tl-2xl rounded-tr-2xl rounded-br-2xl text-xl">
+                                      {msg.message}
+                                    </p>
+                                  </div>
+                                )}
+
+                                {msg.type === "suggestion" && (
+                                  <div
+                                    className="p-3 flex"
+                                    style={{ textAlign: "left" }}
+                                  >
+                                    {msg.message
+                                      .split("。,")
+                                      .map((suggestion, suggestionIndex) => (
+                                        <span
+                                          className="border-4 border-blue-800 p-3 rounded-full text-lg"
+                                          key={suggestionIndex}
+                                        >
+                                          {suggestion}
+                                        </span>
+                                      ))}
+                                  </div>
+                                )}
+                              </div>
+                            ),
+                        )}
                       </div>
-                      {/* endsocket */}
                       <div className="border-t-gray-400 border-t w-full"></div>
                       <p className="text-gray-400 py-3">
                         メッセージを入力してください。
                       </p>
-                      <form
-                        className="flex items-baseline gap-2"
-                        onSubmit={(e) => sendData(e)}
-                      >
+                      <div className="flex items-baseline gap-2">
                         <input
                           type="text"
                           placeholder="メッセージを入力してください"
-                          onChange={(e) => setCurrentMsg(e.target.value)}
-                          value={currentMsg}
+                          onChange={(e) => setMessage(e.target.value)}
+                          value={message}
                           required
                           className="w-full rounded-lg border bg-transparent py-4 pl-6 pr-10 outline-none border-form-strokedark bg-form-input focus:border-primary mb-5"
                         />
@@ -224,7 +519,7 @@ const Service: React.FC<Props> = ({ onScale, label, scale, gap1, gap }) => {
                           src="/assets/images/msg_send.svg"
                           className=" rounded-md hover:scale-125 cursor-pointer"
                         />
-                      </form>
+                      </div>
                     </div>
                   </div>
                 </div>

@@ -1,16 +1,11 @@
 "use client";
-import Image from "next/image";
-import Link from "next/link";
+import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import useState from "react-usestateref";
 import { toastNotification } from "../../components/ToastNTF";
-// import { BaseLayout } from "../../layouts/BaseLayout";
-import { authService } from "@/services";
 import ButtonPrimary from "@/components/shared/Button/ButtonPrimary";
-import { logIn, updateAvatar, updateName, updateNickName } from "@/store/user";
-// import { truncate } from "../../utils";
 import { useMediaQuery } from "react-responsive";
 import React, { FormEvent, ChangeEvent } from "react";
 import signIn from "@/firebase/auth/signin";
@@ -18,32 +13,18 @@ import signIn from "@/firebase/auth/signin";
 const LoginPage = () => {
   //   const { connected, publicKey, disconnect } = useWallet();
   const [invalidForm, setInvalidForm, invalidFormRef] = useState(true);
-  const [name, setName] = useState("");
-  // const [password, setPassword] = useState("");
-  const [invalidName, setInvalidName, invalidNameRef] = useState(false);
   const [invalidEmail, setInvalidEmail, invalidEmailRef] = useState(false);
   const [invalidPass, setInvalidPass, invalidPassRef] = useState(false);
-  const [isClickSubmit, SetClickSubmit] = useState(false);
   const isDesktop = useMediaQuery({ query: "(min-width: 1650px)" });
-  const dispatch = useDispatch();
   const hasNumber = /\d/;
-
   const [email, setEmail] = React.useState<string>("");
   const [password, setPassword] = React.useState<string>("");
   const router = useRouter();
-
-  const handleForm = async (event: FormEvent) => {
-    event.preventDefault();
-
-    const { result, error } = await signIn(email, password);
-
-    if (error) {
-      return console.log(error);
-    }
-
-    // else successful
-    console.log(result);
-    return router.push("/home");
+  const params = {
+    mail: email,
+    password: password,
+    device: "pc1",
+    newMenu: true,
   };
 
   useEffect(() => {
@@ -66,44 +47,15 @@ const LoginPage = () => {
       setInvalidForm(false);
     }
   }, [email, password]);
-
-  useEffect(() => {
-    const submit = async (user: { email: string; password: string }) => {
-      return await authService.login(user);
-    };
-    if (isClickSubmit) {
-      let user = {
-        email: email,
-        password: password,
-      };
-      submit(user)
-        .then((data: any) => {
-          if (data.success) {
-            toastNotification(data.message, "success", 3000);
-            dispatch(logIn(data.access_token));
-            dispatch(updateName(data.user.name));
-            dispatch(updateNickName(data.user.nickname));
-            dispatch(updateAvatar(data.user.avatar));
-            router.push("/home");
-          }
-        })
-        .catch(() => {
-          //   disconnect();
-          toastNotification("Email & Password are incorrect!", "error", 3000);
-          // console.error("Error:", error);
-        });
-    }
-  }, [isClickSubmit]);
-
   // function connectAccount() {
   const connectAccount = async () => {
     if (email === "" || !email.includes("@")) {
       setInvalidEmail(true);
-      toastNotification("Email is invalid!", "error", 3000);
+      toastNotification("メールアドレスを入力してください。", "error", 3000);
       console.log("email");
     }
     if (password.length < 6 || !hasNumber.test(password)) {
-      toastNotification("Password is invalid!", "error", 3000);
+      toastNotification("パスワードを入力してください。", "error", 3000);
       console.log("pwd");
       setInvalidPass(true);
     }
@@ -111,20 +63,33 @@ const LoginPage = () => {
       const { result, error } = await signIn(email, password);
 
       if (error) {
-        return console.log(error);
+        toastNotification(
+          "メールアドレスかパスワードが異なります",
+          "error",
+          3000,
+        );
+        return console.log("Email and Password are incorrect", error);
       }
 
       // else successful
-      console.log("aa", result);
-      return router.push("/home");
+      console.log("Signin Success", result);
+      toastNotification("ご登録おめでとうございます", "success", 3000);
+      const response = await axios.post(
+        "https://kirihare-web.jp/employee/webUser",
+        params,
+      );
+      if (response) {
 
-      SetClickSubmit(true);
-      if ((window as any).solana && (window as any).solana.connect) {
-        (window as any).solana.connect();
-        (window as any).solana.request({ method: "connect" });
-      } else {
-        // Handle the case when the `solana` object is not defined
+
+        console.log('twoPhaseAuth', response.data.twoPhaseAuth)
+        if(response.data.twoPhaseAuth==false){return router.push("/employee/webUser");}
+        else{return router.push("/employee/twoPhaseAuth");}
+        
+      }else{
+        console.log('error')
       }
+
+      // return router.push("/employee/twoPhaseAuth");
     }
   };
 
@@ -136,7 +101,7 @@ const LoginPage = () => {
             isDesktop
               ? "text-[55px]"
               : "2xl:text-[50px] xl:text-[46px] lg:text-[40px] md:text-[36px] sm:text-[33px] text-[30px]"
-          }  text-[#92d692] font-bold font-Inter mt-[70px]`}
+          }  text-[#92d692] font-bold font-Inter mt-[80px]`}
         >
           <span
             style={{
@@ -171,9 +136,9 @@ const LoginPage = () => {
             <div
               className={`${
                 isDesktop
-                  ? "text-[32px]"
+                  ? "text-[40px]"
                   : "xl:text-[30px] lg:text-[24px] md:text-[23px] sm:text-[22px] text-[21px]"
-              } font-semibold uppercase text-white opacity-100 z-10 2xl:mb-[35px] xl:mb-[20px] lg:mb-[13px] mb-[16px]`}
+              } font-semibold uppercase text-white opacity-100 z-10 2xl:mb-[65px] xl:mb-[20px] lg:mb-[13px] mb-[16px]`}
             >
               ユーザログイン
             </div>
@@ -202,7 +167,7 @@ const LoginPage = () => {
               </div>
             </div>
             <div
-              className={`2xl:text-[14px] md:text-[13px] text-[12px] text-[#aaa] z-20 text-left w-full xl:pl-[57px] lg:pl-[20px] sm:pl-[40px] pl-[30px] mb-3`}
+              className={`2xl:text-[14px] md:text-[13px] text-[12px] text-[#aaa] z-20 text-left w-full xl:pl-[57px] lg:pl-[20px] sm:pl-[40px] pl-[30px] mb-6`}
               style={{
                 visibility: invalidEmailRef.current ? "visible" : "hidden",
               }}
@@ -241,14 +206,10 @@ const LoginPage = () => {
                 visibility: invalidPassRef.current ? "visible" : "hidden",
               }}
             >
-              
               <span className="2xl:text-[14px] md:text-[13px] text-[12px]">
                 (Input min 6 letters and 1 number)
               </span>
             </div>
-            <p className="2xl:text-[18px] md:text-[15px] text-[12px] text-[#aaa] z-20 text-left w-full pl-[20px] mb-3">
-              <span className="cursor-pointer">スキップ</span>
-            </p>
             <ButtonPrimary
               sizeClass={`${
                 isDesktop
@@ -263,21 +224,8 @@ const LoginPage = () => {
             </ButtonPrimary>
           </div>
         </div>
-        <div
-          className={`${
-            isDesktop
-              ? "text-[24px]"
-              : "2xl:text-[21px] xl:text-[20px] lg:text-[16px] sm:text-[15px] text-[13px]"
-          } text-[#f4f4f4b3] z-10 font-bold 2xl:mt-[30px] xl:mt-[25px] lg:mt-[20px] md:mt-[18px] mt-[15px]`}
-        >
-          <span className="text-[#f4f4f480] font-[600]">Powered by</span> Suits
-          Syndicate.
-        </div>
       </div>
     </>
   );
 };
-// LoginPage.getLayout = (page) => {
-//   return <BaseLayout>{page}</BaseLayout>;
-// };
 export default LoginPage;

@@ -18,7 +18,7 @@ interface User {
 }
 
 
-export default function ChatPage1() {
+export default function Home() {
   const [reduction, setReduction] = useState<boolean | undefined>();
   const { user } = useAuthContext() as { user: User | null };
   const router = useRouter();
@@ -35,11 +35,11 @@ export default function ChatPage1() {
       });
   };
 
-  // React.useEffect(() => {
-  //   if (user == null) {
-  //     router.push("/signin");
-  //   }
-  // }, [user]);
+  React.useEffect(() => {
+    if (user == null) {
+      router.push("/signin");
+    }
+  }, [user]);
 
   React.useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -63,7 +63,7 @@ export default function ChatPage1() {
       <div>
         {reduction ? (
           <>
-            <div className="m-16 grid grid-cols-3 gap-8 px-4 text-gray-800">
+            <div className="m-16 grid grid-cols-3 gap-8">
               <div className="col-span-1">
                 <Menu />
               </div>

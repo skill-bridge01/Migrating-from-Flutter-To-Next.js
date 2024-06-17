@@ -22,6 +22,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/firebase/firebase.js", "src/components/phoneAuth/phoneAuth.tsx", "src/app/phone/page.js", "src/firebase/firebaseConfig.tsx", "src/app/employee/twoPhaseAuth/page.js", "src/app/user/page.js"],
   "exclude": ["node_modules"]
 }
