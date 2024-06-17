@@ -1,4 +1,4 @@
-KIRIHARE AI & HR
+Kirihare + PC + Project 
 
 ## Getting Started
 
@@ -13,6 +13,9 @@ pnpm dev
 # or
 bun dev
 ```
+
+npm i --legacy-peer-deps
+
 
 ## Storybook
 

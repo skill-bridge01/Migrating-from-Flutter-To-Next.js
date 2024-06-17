@@ -15,6 +15,9 @@ const initialState: ChatState = {
     mannedConsultation: false,
     selfCheck: false,
     consultationReservation: "",
+    onlineHealthRoom: false,
+    onlineHealthRoomMenu: false,
+    onlineHealthRoomReservation: "",
   },
 };
 
@@ -30,6 +33,9 @@ export const chatSlice = createSlice({
         mannedConsultation: false,
         consultationReservation: "",
         selfCheck: false,
+        onlineHealthRoom: false,
+        onlineHealthRoomMenu: false,
+        onlineHealthRoomReservation:"",
       };
     },
     updateConsultation: (state, action) => {
@@ -50,6 +56,15 @@ export const chatSlice = createSlice({
     updateSelfCheck: (state, action) => {
       state.chat.selfCheck = action.payload;
     },
+    updateOnlineHealthRoom: (state, action) => {
+      state.chat.onlineHealthRoom = action.payload;
+    },
+    updateOnlineHealthRoomMenu: (state, action) => {
+      state.chat.onlineHealthRoomMenu = action.payload;
+    },
+    updateOnlineHealthRoomReservation: (state, action) => {
+      state.chat.onlineHealthRoomReservation = action.payload;
+    },
   },
   extraReducers: (builder) => {},
 });
@@ -62,6 +77,9 @@ export const {
   updateMannedConsultation,
   updateConsultationReservation,
   updateSelfCheck,
+  updateOnlineHealthRoom,
+  updateOnlineHealthRoomMenu,
+  updateOnlineHealthRoomReservation,
 } = chatSlice.actions;
 export const selectChat = (state: RootState) => state.chat;
 export default chatSlice.reducer;

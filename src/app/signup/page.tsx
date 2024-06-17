@@ -183,7 +183,7 @@ const SignUp = () => {
               }}
             >
               <span className="2xl:text-[14px] md:text-[13px] text-[12px]">
-                (Input min 6 letters and 1 number)
+                （6文字以上、かつ数字を1つ以上含めてください）
               </span>
             </div>
             <ButtonPrimary

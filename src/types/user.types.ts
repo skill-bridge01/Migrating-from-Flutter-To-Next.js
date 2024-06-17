@@ -54,6 +54,8 @@ export interface IPasswordChangeRequest {
 export interface IPhone {
   phone: string;
   verify: boolean;
+  verificationId:string;
+  phoneReg: boolean;
 }
 export interface IChat {
   consultation: boolean;
@@ -62,4 +64,7 @@ export interface IChat {
   mannedConsultation:boolean;
   selfCheck:boolean;
   consultationReservation:string,
+  onlineHealthRoom:boolean;
+  onlineHealthRoomMenu:boolean;
+  onlineHealthRoomReservation:string,
 }

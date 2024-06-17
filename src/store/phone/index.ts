@@ -10,6 +10,8 @@ const initialState: PhoneState = {
   phone: {
     phone: "",
     verify: false,
+    verificationId:'',
+    phoneReg:false
   },
 };
 
@@ -21,13 +23,21 @@ export const phoneSlice = createSlice({
       state.phone = {
         phone: "",
         verify: false,
+        verificationId:'',
+        phoneReg:false
       };
     },
     updatePhone: (state, action) => {
       state.phone.phone = action.payload;
     },
+    verificationId: (state, action) => {
+      state.phone.verificationId = action.payload;
+    },
     verifyPhone: (state, action) => {
       state.phone.verify = action.payload;
+    },
+    phoneReg: (state, action) => {
+      state.phone.phoneReg = action.payload;
     },
     // logIn: (state, action) => {
     //   localStorage.setItem("token", action.payload);
@@ -56,6 +66,8 @@ export const {
   initPhone,
   updatePhone,
   verifyPhone,
+  verificationId,
+  phoneReg,
 } = phoneSlice.actions;
 export const selectPhone = (state: RootState) => state.phone;
 export default phoneSlice.reducer;

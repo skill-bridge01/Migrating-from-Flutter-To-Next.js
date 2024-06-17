@@ -7,6 +7,7 @@ import {
   updateMannedConsultation,
   updateConsultationReservation,
   updateSelfCheck,
+  updateOnlineHealthRoomReservation, updateOnlineHealthRoomMenu
 } from "../../store/chat";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
@@ -27,6 +28,12 @@ const Menu = () => {
   const [mannedConsultation, setMannedConsultation] = useState(false);
   const [mannedConsultationMenu, setMannedConsultationMenu] = useState(false);
   const [selfCheck, setSelfCheck] = useState(false);
+  const [onlineHealthRoom, setonlineHealthRoom] = useState(false);
+  const [onlineHealthRoomMenu, setonlineHealthRoomMenu] = useState(false);
+  const [onlineHealthRoomReservation, setonlineHealthRoomReservation] = useState("");
+  const [onlineHealthRoomReservationType, setOnlineHealthRoomReservationType] = useState("");
+  const [onlineHealthRoomReservationText, setOnlineHealthRoomReservationText] = useState("");
+
   const dispatch = useAppDispatch();
   const handleConsultationMenu = () => {
     setSelfCareMenu(false);
@@ -34,59 +41,135 @@ const Menu = () => {
     setMannedConsultationMenu(false);
     dispatch(updateConsultationMenu(true));
     setConsultationReservation("");
+    setonlineHealthRoomReservation(""),
     setSelfCheck(false);
+    setonlineHealthRoom(false);
+    setonlineHealthRoomMenu(false);
   };
   const handleConsultationReservation = () => {
+    if (dayjs().isSame(value, 'day') && (value?.diff(dayjs(), 'hour') ?? 0) < 3) {
+      setConsultationReservation("現在の時刻から3時間後を選択してください。");
+      dispatch(updateConsultationReservation(""));
+      return;
+    }
+
     setConsultationReservation(
-      `ハラスメント相談の希望日時（${value?.get("year")}年${(value?.get("month") ?? 0) + 1}月${value?.get("date")}日 ${value?.get("hour")}:${value?.get("minute")}）が送信されました。ハラスメント相談にはチャット/ビデオ通話(Google Meet)/お電話がご利用可能です。リクエストが無い場合はお電話になりますので、ご希望がありましたら事前にチャットにご希望のコミニケーション手段をお知らせください。`,
+      `ハラスメント相談の希望日時（${value?.get("year")}年${(value?.get("month") ?? 0) + 1}月${value?.get("date")}日 ${value?.get("hour")}:${value?.get("minute")?.toString().padStart(2, '0')}）が送信されました。ハラスメント相談にはチャット/ビデオ通話(Google Meet)/お電話がご利用可能です。リクエストが無い場合はお電話になりますので、ご希望がありましたら事前にチャットにご希望のコミニケーション手段をお知らせください。`,
     );
     dispatch(
       updateConsultationReservation(
-        `ハラスメント相談の希望日時（${value?.get("year")}年${(value?.get("month") ?? 0) + 1}月${value?.get("date")}日 ${value?.get("hour")}:${value?.get("minute")}）が送信されました。ハラスメント相談にはチャット/ビデオ通話(Google Meet)/お電話がご利用可能です。リクエストが無い場合はお電話になりますので、ご希望がありましたら事前にチャットにご希望のコミニケーション手段をお知らせください。`,
+        `ハラスメント相談の希望日時（${value?.get("year")}年${(value?.get("month") ?? 0) + 1}月${value?.get("date")}日 ${value?.get("hour")}:${value?.get("minute")?.toString().padStart(2, '0')}）が送信されました。ハラスメント相談にはチャット/ビデオ通話(Google Meet)/お電話がご利用可能です。リクエストが無い場合はお電話になりますので、ご希望がありましたら事前にチャットにご希望のコミニケーション手段をお知らせください。`,
       ),
     );
   };
+
+  const handleOnlineHealthRoomReservation = () => {
+    if (dayjs().isSame(value, 'day') && (value?.diff(dayjs(), 'hour') ?? 0) < 3) {
+      setOnlineHealthRoomReservationText("現在の時刻から3時間後を選択してください。");
+      dispatch(updateOnlineHealthRoomReservation(""));
+      return;
+    }
+
+    let reservationText = "";
+    switch (onlineHealthRoomReservationType) {
+      case "ビデオ通話カウンセリング":
+        reservationText = `ビデオ通話(Google Meet)カウンセリングの希望日時（${value?.get("year")}年${(value?.get("month") ?? 0) + 1}月${value?.get("date")}日 ${value?.get("hour")}:${value?.get("minute")?.toString().padStart(2, '0')}）が送信されました。`;
+        break;
+      case "電話カウンセリング":
+        reservationText = `電話カウンセリングの希望日時（${value?.get("year")}年${(value?.get("month") ?? 0) + 1}月${value?.get("date")}日 ${value?.get("hour")}:${value?.get("minute")?.toString().padStart(2, '0')}）が送信されました。`;
+        break;
+      case "チャットカウンセリング":
+        reservationText = `チャットカウンセリングの希望日時（${value?.get("year")}年${(value?.get("month") ?? 0) + 1}月${value?.get("date")}日 ${value?.get("hour")}:${value?.get("minute")?.toString().padStart(2, '0')}）が送信されました。`;
+        break;
+      default:
+        reservationText = "";
+    }
+    setOnlineHealthRoomReservationText(reservationText);
+    dispatch(updateOnlineHealthRoomReservation(reservationText));
+  };
+
   const handleConsultation = () => {
     setMannedConsultation(false);
     setSelfCareMenu(false);
     setMannedConsultationMenu(false);
     dispatch(updateConsultation(true));
     setConsultationReservation("");
+    setonlineHealthRoomReservation(""),
     setSelfCheck(false);
+    setonlineHealthRoom(false);
+    setonlineHealthRoomMenu(false);
   };
   const handleSelfCareMenu = () => {
     setConsultationReservation("");
+    setonlineHealthRoomReservation(""),
     setMannedConsultation(false);
     setSelfCareMenu(true);
     setMannedConsultationMenu(false);
     dispatch(updateSelfCareMenu(true));
     setSelfCheck(false);
+    setonlineHealthRoom(false);
+    setonlineHealthRoomMenu(false);
   };
 
   const handleMannedConsultationMenu = () => {
     setConsultationReservation("");
+    setonlineHealthRoomReservation(""),
     setSelfCareMenu(false);
     setMannedConsultation(false);
     setMannedConsultationMenu(true);
     dispatch(updateMannedConsultation(true));
     setSelfCheck(false);
+    setonlineHealthRoom(false);
+    setonlineHealthRoomMenu(false);
   };
   const handleMannedConsultation = () => {
     setConsultationReservation("");
+    setonlineHealthRoomReservation(""),
     setSelfCareMenu(false);
     setMannedConsultationMenu(false);
     setMannedConsultation(true);
     setSelfCheck(false);
+    setonlineHealthRoom(false);
+    setonlineHealthRoomMenu(false);
   };
 
   const handleSelfCheck = () => {
     setConsultationReservation("");
+    setonlineHealthRoomReservation(""),
     setMannedConsultation(false);
     setSelfCareMenu(false);
     setSelfCheck(true);
     setMannedConsultationMenu(false);
     dispatch(updateSelfCheck(true));
+    setonlineHealthRoom(false);
+    setonlineHealthRoomMenu(false);
   };
+
+  const handleonlineHealthRoomMenu = () => {
+    setConsultationReservation("");
+    setonlineHealthRoomReservation(""),
+      setSelfCareMenu(false);
+    setMannedConsultationMenu(false);
+    setMannedConsultation(false);
+    setSelfCheck(false);
+    setonlineHealthRoom(false);
+    setonlineHealthRoomMenu(true);
+    dispatch(updateOnlineHealthRoomMenu(true));
+  };
+
+  const handleonlineHealthRoom = (reservationType: string) => {
+    setConsultationReservation("");
+    setonlineHealthRoomReservation("");
+    setSelfCareMenu(false);
+    setMannedConsultationMenu(false);
+    setMannedConsultation(false);
+    setSelfCheck(false);
+    setonlineHealthRoom(true);
+    setonlineHealthRoomMenu(false);
+    setOnlineHealthRoomReservationType(reservationType);
+  };
+
+
   return (
     <div className="w-full pt-5 pb-3 items-center ">
       <div className="flex gap-3 justify-center">
@@ -147,25 +230,6 @@ const Menu = () => {
         </p>
         <div className="flex flex-col xl:flex-row xl:gap-5 gap-2 xl:mt-2 mt-2 text-center">
           <button
-            onClick={handleSelfCareMenu}
-            rel="noopener noreferrer"
-            className="lg:px-4 px-2 max-w-full xl:w-56 xl:h-20 h-16 flex justify-center items-center border rounded-xl bg-teal-dark"
-          >
-            <h1 className="flex justify-center items-center text-white xl:text-lg text-base">
-              セルフケア MENU
-            </h1>
-          </button>
-          <Button
-            link="https://xs805903.xsrv.jp/kirihare001/shinri-test/"
-            title="心理テスト"
-          />
-        </div>
-        <div className="flex flex-col xl:flex-row xl:gap-5 gap-2 xl:mt-2 mt-2 text-center">
-          <Button
-            link="https://kirihare-web.jp/E73ArfjpADchHAyN9ihb34FTVdD7kcjuC7nHLhkJiCQE3asNMe6s/?m=harassmentview&webLogin=true&l=XwtmjNKXWNdUA_fEEIm64iHIivQYutHeQLq6Tl5aAyiDYsbvDNNlhkyPiqqgJxH3"
-            title="ハラスメント Web報告"
-          />
-          <button
             onClick={handleMannedConsultationMenu}
             rel="noopener noreferrer"
             className="lg:px-4 px-2 max-w-full xl:w-56 xl:h-20 h-16 flex justify-center items-center border rounded-xl bg-teal-dark"
@@ -174,8 +238,21 @@ const Menu = () => {
               有人ハラスメント 相談窓口
             </h1>
           </button>
+          <button
+            onClick={handleonlineHealthRoomMenu}
+            rel="noopener noreferrer"
+            className="lg:px-4 px-2 max-w-full xl:w-56 xl:h-20 h-16 flex justify-center items-center border rounded-xl bg-teal-dark"
+          >
+            <h1 className="flex justify-center items-center text-white xl:text-lg text-base">
+              心理士カウンセリング予約
+            </h1>
+          </button>
         </div>
         <div className="flex flex-col xl:flex-row xl:gap-5 gap-2 xl:mt-2 mt-2 text-center">
+          <Button
+            link="https://kirihare-web.jp/E73ArfjpADchHAyN9ihb34FTVdD7kcjuC7nHLhkJiCQE3asNMe6s/?m=harassmentview&webLogin=true&l=XwtmjNKXWNdUA_fEEIm64iHIivQYutHeQLq6Tl5aAyiDYsbvDNNlhkyPiqqgJxH3"
+            title="ハラスメント Web報告"
+          />
           <button
             onClick={handleSelfCheck}
             rel="noopener noreferrer"
@@ -185,16 +262,35 @@ const Menu = () => {
               心のセルフチェック
             </h1>
           </button>
+        </div>
+        <div className="flex flex-col xl:flex-row xl:gap-5 gap-2 xl:mt-2 mt-2 text-center">
+          <Button
+            link="https://xs805903.xsrv.jp/kirihare001/harassment-quiz/"
+            title="ハラスメントクイズ"
+          />
+          <Button
+            link="https://xs805903.xsrv.jp/kirihare001/shinri-test/"
+            title="カジュアルな心理テスト"
+          />
+        </div>
+        <div className="flex flex-col xl:flex-row xl:gap-5 gap-2 xl:mt-2 mt-2 text-center">
+        </div>
+        <div className="flex flex-col xl:flex-row xl:gap-5 gap-2 xl:mt-2 mt-2 text-center">
           <button
             rel="noopener noreferrer"
             className="hidden lg:px-4 px-2 max-w-full xl:w-56 xl:h-20 h-16 xl:flex justify-center items-center bg-white"
           >
             <h1 className="flex justify-center items-center text-white xl:text-lg text-base"></h1>
           </button>
-          {/* <Button
-            link="https://xs805903.xsrv.jp/kirihare001/shinri-test/"
-            title="心理テスト"
-          /> */}
+          <button
+            onClick={handleSelfCareMenu}
+            rel="noopener noreferrer"
+            className="lg:px-4 px-2 max-w-full xl:w-56 xl:h-20 h-16 flex justify-center items-center border rounded-xl bg-teal-dark"
+          >
+            <h1 className="flex justify-center items-center text-white xl:text-lg text-base">
+              セルフケア MENU
+            </h1>
+          </button>
         </div>
       </div>
       {selfCareMenu && (
@@ -300,9 +396,9 @@ const Menu = () => {
           <div className="flex items-baseline gap-4">
             <LocalizationProvider adapterLocale="ja" dateAdapter={AdapterDayjs}>
               <DateTimePicker
-                // label="Controlled picker"
                 value={value}
                 onChange={(newValue) => setValue(newValue)}
+                minDateTime={dayjs().isSame(value, 'day') ? dayjs().add(3, 'hour') : undefined}
               />
             </LocalizationProvider>
           </div>
@@ -381,6 +477,81 @@ const Menu = () => {
               ④ うつ度チェック
             </a>
           </button>
+        </div>
+      )}
+      {onlineHealthRoomMenu && (
+        <div className="pt-2 mx-auto flex flex-col items-center">
+          <div
+            rel="noopener noreferrer"
+            className="mx-auto w-full lg:px-5 px-2 text-center h-16 flex justify-center items-center border rounded-lg bg-blue-400 mt-10 mb-5"
+          >
+            <h1 className="flex justify-center items-center text-white xl:text-lg text-base leading-4">
+              心理士カウンセリング予約
+            </h1>
+          </div>
+          <button
+            rel="noopener noreferrer"
+            onClick={() => handleonlineHealthRoom("ビデオ通話カウンセリング")}
+            className="mx-auto w-full h-16 flex justify-center items-center border rounded-lg bg-green mt-2"
+          >
+            <h1 className="flex justify-center items-center text-white text-sm">
+              ビデオ通話カウンセリング
+            </h1>
+          </button>
+          <button
+            rel="noopener noreferrer"
+            onClick={() => handleonlineHealthRoom("電話カウンセリング")}
+            className="mx-auto w-full h-16 flex justify-center items-center border rounded-lg bg-green mt-5"
+          >
+            <h1 className="flex justify-center items-center text-white text-sm">
+              電話カウンセリング
+            </h1>
+          </button>
+          <button
+            rel="noopener noreferrer"
+            onClick={() => handleonlineHealthRoom("チャットカウンセリング")}
+            className="mx-auto w-full h-16 flex justify-center items-center border rounded-lg bg-green mt-2"
+          >
+            <h1 className="flex justify-center items-center text-white text-sm">
+              チャットカウンセリング
+            </h1>
+          </button>
+        </div>
+      )}
+      {onlineHealthRoom && (
+        <div className="pt-2 mx-auto flex flex-col items-center">
+          <div
+            rel="noopener noreferrer"
+            className="px-2 w-full h-16 text-center flex justify-center items-center border rounded-lg bg-blue-400 mt-10 mb-3"
+          >
+            <h1 className="flex justify-center items-center text-white xl:text-lg text-base">
+              心理士カウンセリング予約
+            </h1>
+          </div>
+          <br />
+          <p className="pb-4 text-md text-gray-600">
+            予約時間を選択してください
+          </p>
+          <div className="flex items-baseline gap-4">
+            <LocalizationProvider adapterLocale="ja" dateAdapter={AdapterDayjs}>
+              <DateTimePicker
+                value={value}
+                onChange={(newValue) => setValue(newValue)}
+                minDateTime={dayjs().isSame(value, 'day') ? dayjs().add(3, 'hour') : undefined}
+              />
+            </LocalizationProvider>
+          </div>
+          <div className="flex justify-end w-full">
+            <button
+              onClick={handleOnlineHealthRoomReservation}
+              className="bg-blue-500 px-4 py-2 rounded-lg text-md text-white mt-3"
+            >
+              完 了
+            </button>
+          </div>
+          <div className="pt-5 xl:text-lg text-sm">
+            {onlineHealthRoomReservationText}
+          </div>
         </div>
       )}
     </div>

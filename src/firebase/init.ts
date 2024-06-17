@@ -1,22 +1,21 @@
 import { FirebaseApp, getApp, getApps, initializeApp } from "firebase/app";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDniNJJM0IGRe7KJIgxV--P5CGmnkWs5YE",
-    authDomain: "kirihare-test-9833d.firebaseapp.com",
-    projectId: "kirihare-test",
-    storageBucket: "kirihare-test.appspot.com",
-    messagingSenderId: "702239445524",
-    appId: "1:702239445524:web:1dcc5d976177e1f166cd01"
+  apiKey: "AIzaSyBRI6tbD1jqUGCL56RSzov2SsCbaSDrJd0",
+  authDomain: "kirihare-web-pc.firebaseapp.com",
+  projectId: "kirihare-web-pc",
+  storageBucket: "kirihare-web-pc.appspot.com",
+  messagingSenderId: "33560212503",
+  appId: "1:33560212503:web:fc389a7920a43c762fd852",
+  measurementId: "G-F3RNCE92FF",
+};
 
-  };
+let app: FirebaseApp;
 
-let app:FirebaseApp;
-
-if (getApps().length==0){
-    app=initializeApp(firebaseConfig);
-}else {
-    app = getApp();
+if (getApps().length == 0) {
+  app = initializeApp(firebaseConfig);
+} else {
+  app = getApp();
 }
 
-export { app }
-
+export { app };

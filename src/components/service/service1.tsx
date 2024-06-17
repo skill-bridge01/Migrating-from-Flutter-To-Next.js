@@ -10,6 +10,9 @@ import {
   updateMannedConsultation,
   updateConsultationReservation,
   updateSelfCheck,
+  updateOnlineHealthRoom,
+  updateOnlineHealthRoomMenu,
+  updateOnlineHealthRoomReservation
 } from "../../store/chat";
 import { selectChat } from "@/store/chat";
 import { selectUser, updateUserID, updateTwoPhaseAuth } from "@/store/user";
@@ -25,6 +28,7 @@ interface UserDataType {
   userId: String;
   selfCareMenu: Boolean;
   mannedConsultation: Boolean;
+  onlineHealthRoomMenu: Boolean;
 }
 
 interface DataType {
@@ -241,7 +245,7 @@ const Service1: React.FC<Props> = ({
       <br />
       ①一行日記
       <br />
-      学に基づいた感情把握アプリ。日々記録することで、自分がどのようなタイミングで感情が変化しているのかを客観的に把握できます。
+      認知心理学に基づいた感情把握アプリ。日々記録することで、自分がどのようなタイミングで感情が変化しているのかを客観的に把握できます。
       <br />
       <br />
       ②自律訓練
@@ -255,7 +259,7 @@ const Service1: React.FC<Props> = ({
       <br />
       ③マインドフルネス
       <br />
-      近年注目されている心理療法の一つ。日常の中のちょっとした工夫でストレスを緩和し、充実感を得られるポイントを1週間に1回のペースでコラムとして配信しています。
+      近年注目されている心理療法の一つ。日常の中のちょっとした工夫でストレスを緩和し、充実感を得られるポイントをコラムとして掲載しています。
       <br />
       <br />
       ④コラム法
@@ -301,16 +305,15 @@ const Service1: React.FC<Props> = ({
 
   const [onlineHealthRoom, setOnlineHealthRoom] = React.useState(
     <>
-      オンライン保健室では、臨床心理士／公認心理師が50分間ご相談をうかがいます。相談内容は何でもかまいません。
+      心理士カウンセリングでは、臨床心理士／公認心理師が50分間ご相談をうかがいます。相談内容は何でもかまいません。
       <br />
       もやもやした気持ち、カウンセラーに相談しませんか？
       <br />
       ご相談内容は、会社に通知されませんので、ご安心ください。
       <br />
-      カウンセリングの方法は、チャット／ビデオ通話(Google
-      Meet)／お電話のいずれかを選択できます。
+      カウンセリングの方法は、ビデオ通話(Google Meet)／お電話／チャットのいずれかを選択できます。
       <br />
-      ご希望のカウンセリング方法をお選びください。
+      左下のボタンからご希望のカウンセリング方法をお選びください。
       <br />
       <br />
       ※当日予約を希望される場合は、現時刻より3時間先の時刻から予約可能です。
@@ -521,6 +524,37 @@ const Service1: React.FC<Props> = ({
     }
   }, [chatState.chat.mannedConsultation]);
 
+  //
+  useEffect(() => {
+    if (openTab === 1) {
+      if (chatState.chat.onlineHealthRoomMenu) {
+        setMsg("心理士カウンセリング予約");
+        setType("question");
+        webSocketAPI.sendMessage("message", "心理士カウンセリング予約");
+        setMessages((prevMessages: any) => [
+          ...prevMessages,
+          { message: "心理士カウンセリング予約", type: "question" },
+        ]);
+        setSend(true);
+        dispatch(updateOnlineHealthRoomMenu(false));
+      }
+    }
+    if (openTab === 2) {
+      if (chatState.chat.onlineHealthRoomMenu) {
+        setMsg("心理士カウンセリング予約");
+        setType("question");
+        webSocketAPI.sendMessage("message", "心理士カウンセリング予約");
+        setMessages2((prevMessages: any) => [
+          ...prevMessages,
+          { message: "心理士カウンセリング予約", type: "question" },
+        ]);
+        setSend2(true);
+        dispatch(updateOnlineHealthRoomMenu(false));
+      }
+    }
+  }, [chatState.chat.onlineHealthRoomMenu]);
+  //
+
   useEffect(() => {
     if (openTab === 1) {
       if (chatState.chat.selfCheck) {
@@ -575,6 +609,34 @@ const Service1: React.FC<Props> = ({
       }
     }
   }, [chatState.chat.consultationReservation]);
+
+  useEffect(() => {
+    if (openTab === 1) {
+      if (chatState.chat.onlineHealthRoomReservation) {
+        setMsg(chatState.chat.onlineHealthRoomReservation);
+        setType("chat");
+        setMessages((prevMessages: any) => [
+          ...prevMessages,
+          { message: chatState.chat.onlineHealthRoomReservation, type: "chat" },
+        ]);
+        setSend(true);
+        dispatch(updateOnlineHealthRoomReservation(""));
+      }
+    }
+    if (openTab === 2) {
+      if (chatState.chat.onlineHealthRoomReservation) {
+        setMsg(chatState.chat.onlineHealthRoomReservation);
+        setType("chat");
+        setMessages2((prevMessages: any) => [
+          ...prevMessages,
+          { message: chatState.chat.onlineHealthRoomReservation, type: "chat" },
+        ]);
+        setSend2(true);
+        dispatch(updateOnlineHealthRoomReservation(""));
+      }
+    }
+  }, [chatState.chat.onlineHealthRoomReservation]);
+
   const handleConsultations = (consulmsg: any) => {
     setSend(true);
     if (consulmsg.trim().length > 0) {
@@ -1197,6 +1259,16 @@ const Service1: React.FC<Props> = ({
                                         </span>
                                       </div>
                                     )}
+                                    {user.onlineHealthRoomMenu && (
+                                      <div className="flex justify-end gap-10 py-1">
+                                        <span
+                                          style={{ textAlign: "left" }}
+                                          className="bg-gray-300  max-w-[80%] p-4 rounded-tl-2xl rounded-bl-2xl rounded-br-2xl"
+                                        >
+                                          心理士カウンセリング予約
+                                        </span>
+                                      </div>
+                                    )}
                                     {user.type === "chat" && (
                                       <div
                                         className="max-w-[92%]"
@@ -1387,7 +1459,7 @@ const Service1: React.FC<Props> = ({
                                     </div>
                                   </div>
                                 )}
-                                {msg.message === "オンライン保健室" && (
+                                {msg.message === "心理士カウンセリング予約" && (
                                   <div
                                     className="max-w-[92%] mt-1"
                                     style={{ textAlign: "left" }}
@@ -1557,6 +1629,17 @@ const Service1: React.FC<Props> = ({
                                         </span>
                                       </div>
                                     )}
+                                    {user.onlineHealthRoomMenu && (
+                                      <div className="flex justify-end gap-10 py-1">
+                                        <span
+                                          style={{ textAlign: "left" }}
+                                          className="bg-gray-300  max-w-[80%] p-4 rounded-tl-2xl rounded-bl-2xl rounded-br-2xl"
+                                          // key={index}
+                                        >
+                                          心理士カウンセリング予約
+                                        </span>
+                                      </div>
+                                    )}
                                     {user.type === "chat" && (
                                       <div
                                         className="max-w-[92%]"
@@ -1652,7 +1735,7 @@ const Service1: React.FC<Props> = ({
                                     </div>
                                   </div>
                                 )}
-                                {msg.message === "オンライン保健室" && (
+                                {msg.message === "心理士カウンセリング予約" && (
                                   <div
                                     className="max-w-[92%] mt-1"
                                     style={{ textAlign: "left" }}
@@ -1899,7 +1982,7 @@ const Service1: React.FC<Props> = ({
                                     </div>
                                   </div>
                                 )}
-                                {msg.message === "オンライン保健室" && (
+                                {msg.message === "心理士カウンセリング予約" && (
                                   <div
                                     className="max-w-[92%] mt-1"
                                     style={{ textAlign: "left" }}

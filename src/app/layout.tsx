@@ -24,9 +24,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-        <Provider store={store}>
-          <body className={inter.className}><AuthContextProvider>{children}<ToastContainer /></AuthContextProvider></body>
-        </Provider>
+      <Provider store={store}>
+        <body className={inter.className}>
+          <AuthContextProvider>
+            {children}
+            <div id="recaptcha-container"></div>
+            <ToastContainer />
+          </AuthContextProvider>
+        </body>
+      </Provider>
     </html>
   );
 }

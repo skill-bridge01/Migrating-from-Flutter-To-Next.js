@@ -57,6 +57,11 @@ export default function Demo() {
   React.useEffect(() => {
     connectAccount();
   }, []);
+
+  // useEffect(() => {
+  //   router.push('/signin');
+  // }, [router]);
+
   React.useEffect(() => {
     console.log("TwoPahseAuth", userIdState.user.twoPhaseAuth);
     if (
