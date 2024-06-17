@@ -14,7 +14,7 @@ export default function UserPage(){
     }
 
     if(!currentUser){
-        void router.push("/signin");
+        void router.push("/sign-in");
     }
 
     return <User currentUser={currentUser} />

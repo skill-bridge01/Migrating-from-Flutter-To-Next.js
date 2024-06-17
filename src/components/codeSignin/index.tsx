@@ -2,8 +2,7 @@ import { verifyUserEnrolled } from "@/firebase/authentication";
 import { notify } from "@/utils/notify";
 import { MultiFactorResolver } from "firebase/auth";
 import { useRouter } from "next/navigation";
-import { CodeSignin } from "@/components/code/CodeSignin";
-import { toastNotification } from "../../components/ToastNTF";
+import { Code } from "@/components/code/Code";
 
 type Props = {
   verificationId: string;
@@ -20,18 +19,13 @@ const CodeSignIn = ({ verificationId, resolver }: Props) => {
     );
 
     if (response) {
-      toastNotification("サインアップおめでとうございます", "success", 3000);
-      router.push("/chatpage");
+      router.push("/user");
     } else {
-      toastNotification(
-        "エラーが発生しました。しばらくしてからもう一度お試しください",
-        "error",
-        3000,
-      );
+      notify("Something went wrong.");
     }
   };
 
-  return <CodeSignin getCode={getCode} />;
+  return <Code getCode={getCode} />;
 };
 
 export default CodeSignIn;

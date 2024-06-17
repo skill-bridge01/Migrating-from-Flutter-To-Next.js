@@ -22,53 +22,45 @@ export function UserComponent({ currentUser }: Props) {
       const response = await verifyUserEmail(currentUser);
 
       if (response) {
+        notify("An Email has been sent to you");
       } else {
+        notify("Something went wrong");
       }
     }
   };
 
   return (
-    <div className="bg-white w-full ">
-      <div className="pb-32 mt-52 border-8 border-blue-500 rounded-3xl 2xl:w-1/3 xl:w-1/2 lg:w-2/3 mx-auto flex flex-col gap-24  items-center w-5/6">
-        {/* <h2 className="mt-28 text-3xl text-center font-bold text-gray-800">
-          Hello 👋 
-        </h2> */}
+    <div className="bg-white h-screen w-screen">
+      <div className="flex flex-col justify-center items-center px-12 gap-y-12 pt-40">
+        <h2 className="mt-28 text-3xl text-center font-bold text-gray-800">
+          Hello 👋 ICARS
+        </h2>
         {currentUser &&
           currentUser.emailVerified &&
           !verifyIfUserIsEnrolled(currentUser) && (
-            <>
-              <h2 className="mt-36 text-5xl text-center font-bold text-gray-800">
-                ツーファクタ認証
-              </h2>
-              <Link
-                className="hover:text-[#50A05C] underline text-center w-full text-2xl"
-                href="/mfa"
-              >
-                多要素認証を有効にする
-              </Link>
-            </>
+            <Link
+              className="hover:text-black underline text-center w-full"
+              href="/mfa"
+            >
+              Activate the multifactor authentication
+            </Link>
           )}
         {currentUser &&
           !currentUser.emailVerified &&
           !verifyIfUserIsEnrolled(currentUser) && (
-            <>
-              <h2 className="mt-36 text-4xl text-center font-bold text-gray-800">
-                メールアドレスを確認してください
-              </h2>
-              <button
-                onClick={sendEmail}
-                className="hover:text-[#50A05C] underline text-center w-full text-2xl"
-              >
-                確認コードを送信する
-              </button>
-            </>
+            <button
+              onClick={sendEmail}
+              className="hover:text-black underline text-center w-full"
+            >
+              Verify your email
+            </button>
           )}
         <button
-          className="bg-[#50A05C] rounded-full flex h-14 items-center justify-center px-40 hover:bg-[#265c2d]"
+          className="bg-black rounded-xl flex h-11 items-center justify-center px-4"
           onClick={disconnect}
         >
-          <span className="relative font-medium text-white text-2xl">
-            切断する
+          <span className="relative text-base font-light text-white">
+            Disconnect
           </span>
         </button>
       </div>

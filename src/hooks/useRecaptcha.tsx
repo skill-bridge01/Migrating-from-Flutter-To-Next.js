@@ -8,10 +8,14 @@ export const useRecaptcha = (componentId: string) => {
   const [rechaptcha, setRechaptcha] = useState<ApplicationVerifier>();
 
   useEffect(() => {
-    const recaptchaVerifier = new RecaptchaVerifier(auth, componentId, {
-      size: "invisible",
-      callback: () => {},
-    });
+    const recaptchaVerifier = new RecaptchaVerifier(
+      auth,
+      componentId,
+      {
+        size: "invisible",
+        callback: () => {}
+      }
+    );
 
     setRechaptcha(recaptchaVerifier);
 

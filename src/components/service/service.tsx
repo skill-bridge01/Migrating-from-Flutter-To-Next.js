@@ -1,5 +1,4 @@
 import React from "react";
-import { useAuthContext } from "@/context/AuthContext";
 import ScaleButton from "@/components/button/scaleButton.tsx";
 interface Props {
   onScale: () => void;
@@ -8,13 +7,9 @@ interface Props {
   gap1: string;
   gap: string;
 }
-interface User {
-  id: number;
-  name: string;
-}
 
+// export default Service=({  onLogin }: Props) =>{
 const Service: React.FC<Props> = ({ onScale, label, scale, gap1, gap }) => {
-  const { user } = useAuthContext() as { user: User | null };
   // export default Service: React.FC = () => {
   const [openTab, setOpenTab] = React.useState(1);
   const [message, setMessage] = React.useState("");
@@ -98,241 +93,235 @@ const Service: React.FC<Props> = ({ onScale, label, scale, gap1, gap }) => {
                     >
                       AIがさまざまな問題をサポートいたします。
                     </button>
-
                     <div className="bg-white rounded-lg px-10">
-                      {user && (
-                        <>
-                          <div className="h-40"></div>
-                          <div className={"flex items-start " + gap}>
-                            <img
-                              src="/assets/images/bear12.svg"
-                              className={scale}
-                            />
-                            <div className={"flex flex-col " + gap1}>
-                              <div className={"flex " + gap1}>
-                                <img
-                                  src="/assets/images/chat1.svg"
-                                  className={
-                                    scale +
-                                    " drop-shadow-3xl cursor-pointer hover:drop-shadow-4xl"
-                                  }
-                                  onClick={() =>
-                                    setConsultation(
-                                      <>
-                                        相談内容 1 :
-                                        <br />
-                                        こんにちは、
-                                        <br />
-                                        ようこそお越しくださいました
-                                        <br />
-                                        ご相談内容をメッセージでお送りください。
-                                      </>,
-                                    )
-                                  }
-                                />
-                                <img
-                                  src="/assets/images/chat2.svg"
-                                  className={
-                                    scale +
-                                    " drop-shadow-3xl cursor-pointer hover:drop-shadow-4xl"
-                                  }
-                                  onClick={() =>
-                                    setConsultation(
-                                      <>
-                                        相談内容 2 :
-                                        <br />
-                                        こんにちは、
-                                        <br />
-                                        ようこそお越しくださいました
-                                        <br />
-                                        ご相談内容をメッセージでお送りください。
-                                      </>,
-                                    )
-                                  }
-                                />
-                                <img
-                                  src="/assets/images/chat3.svg"
-                                  className={
-                                    scale +
-                                    " drop-shadow-3xl cursor-pointer hover:drop-shadow-4xl"
-                                  }
-                                  onClick={() =>
-                                    setConsultation(
-                                      <>
-                                        相談内容 3 :
-                                        <br />
-                                        ご相談内容をメッセージでお送りください。
-                                        <br />
-                                        AIの返信は一度の応答に1分程度掛かりますので、
-                                        <br />
-                                        ご送信後、少々おまちください。
-                                      </>,
-                                    )
-                                  }
-                                />
-                                <img
-                                  src="/assets/images/chat4.svg"
-                                  className={
-                                    scale +
-                                    " drop-shadow-3xl cursor-pointer hover:drop-shadow-4xl"
-                                  }
-                                  onClick={() =>
-                                    setConsultation(
-                                      <>
-                                        相談内容 4 :
-                                        <br />
-                                        ご相談内容をメッセージでお送りください。
-                                        <br />
-                                        AIの返信は一度の応答に1分程度掛かりますので、
-                                        <br />
-                                        ご送信後、少々おまちください。
-                                      </>,
-                                    )
-                                  }
-                                />
-                                <img
-                                  src="/assets/images/chat5.svg"
-                                  className={
-                                    scale +
-                                    " drop-shadow-3xl cursor-pointer hover:drop-shadow-4xl"
-                                  }
-                                  onClick={() =>
-                                    setConsultation(
-                                      <>
-                                        相談内容 5 :
-                                        <br />
-                                        こんにちは、
-                                        <br />
-                                        ようこそお越しくださいました
-                                        <br />
-                                        ご相談内容をメッセージでお送りください。
-                                      </>,
-                                    )
-                                  }
-                                />
-                              </div>
-                              <div className={"flex " + gap1}>
-                                <img
-                                  src="/assets/images/chat6.svg"
-                                  className={
-                                    scale +
-                                    " drop-shadow-3xl cursor-pointer hover:drop-shadow-4xl"
-                                  }
-                                  onClick={() =>
-                                    setConsultation(
-                                      <>
-                                        相談内容 6 :
-                                        <br />
-                                        こんにちは、
-                                        <br />
-                                        ようこそお越しくださいました
-                                        <br />
-                                        ご相談内容をメッセージでお送りください。
-                                      </>,
-                                    )
-                                  }
-                                />
-                                <img
-                                  src="/assets/images/chat7.svg"
-                                  className={
-                                    scale +
-                                    " drop-shadow-3xl cursor-pointer hover:drop-shadow-4xl"
-                                  }
-                                  onClick={() =>
-                                    setConsultation(
-                                      <>
-                                        相談内容 7 :
-                                        <br />
-                                        ご相談内容をメッセージでお送りください。
-                                        <br />
-                                        AIの返信は一度の応答に1分程度掛かりますので、
-                                        <br />
-                                        ご送信後、少々おまちください。
-                                      </>,
-                                    )
-                                  }
-                                />
-                                <img
-                                  src="/assets/images/chat8.svg"
-                                  className={
-                                    scale +
-                                    " drop-shadow-3xl cursor-pointer hover:drop-shadow-4xl"
-                                  }
-                                  onClick={() =>
-                                    setConsultation(
-                                      <>
-                                        相談内容 8 :
-                                        <br />
-                                        ご相談内容をメッセージでお送りください。
-                                        <br />
-                                        AIの返信は一度の応答に1分程度掛かりますので、
-                                        <br />
-                                        ご送信後、少々おまちください。
-                                      </>,
-                                    )
-                                  }
-                                />
-                                <img
-                                  src="/assets/images/chat9.svg"
-                                  className={
-                                    scale +
-                                    " drop-shadow-3xl cursor-pointer hover:drop-shadow-4xl"
-                                  }
-                                  onClick={() =>
-                                    setConsultation(
-                                      <>
-                                        相談内容 9 :
-                                        <br />
-                                        こんにちは、
-                                        <br />
-                                        ようこそお越しくださいました
-                                        <br />
-                                        ご相談内容をメッセージでお送りください。
-                                      </>,
-                                    )
-                                  }
-                                />
-                                <img
-                                  src="/assets/images/chat10.svg"
-                                  className={
-                                    scale +
-                                    " drop-shadow-3xl cursor-pointer hover:drop-shadow-4xl"
-                                  }
-                                  onClick={() =>
-                                    setConsultation(
-                                      <>
-                                        相談内容 10 :
-                                        <br />
-                                        こんにちは、
-                                        <br />
-                                        ようこそお越しくださいました
-                                        <br />
-                                        ご相談内容をメッセージでお送りください。
-                                      </>,
-                                    )
-                                  }
-                                />
-                              </div>
-                            </div>
-                          </div>
-                          <div className={"flex items-center py-16 " + gap}>
-                            <img
-                              src="/assets/images/bear12.svg"
-                              className={scale}
-                            />
-                            <div className={"flex flex-col " + gap1}>
-                              <div className={"flex " + gap1}>
-                                <div className="talk-bubble tri-right round border3 left-top">
-                                  <div className="talktext">
-                                    <p>{consultation}</p>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </>
-                      )}
                       <div className="h-40"></div>
+                      <div className={"flex items-start " + gap}>
+                        <img
+                          src="/assets/images/bear12.svg"
+                          className={scale}
+                        />
+                        <div className={"flex flex-col " + gap1}>
+                          <div className={"flex " + gap1}>
+                            <img
+                              src="/assets/images/chat1.svg"
+                              className={
+                                scale +
+                                " drop-shadow-3xl cursor-pointer hover:drop-shadow-4xl"
+                              }
+                              onClick={() =>
+                                setConsultation(
+                                  <>
+                                    相談内容 1 :
+                                    <br />
+                                    こんにちは、
+                                    <br />
+                                    ようこそお越しくださいました
+                                    <br />
+                                    ご相談内容をメッセージでお送りください。
+                                  </>,
+                                )
+                              }
+                            />
+                            <img
+                              src="/assets/images/chat2.svg"
+                              className={
+                                scale +
+                                " drop-shadow-3xl cursor-pointer hover:drop-shadow-4xl"
+                              }
+                              onClick={() =>
+                                setConsultation(
+                                  <>
+                                    相談内容 2 :
+                                    <br />
+                                    こんにちは、
+                                    <br />
+                                    ようこそお越しくださいました
+                                    <br />
+                                    ご相談内容をメッセージでお送りください。
+                                  </>,
+                                )
+                              }
+                            />
+                            <img
+                              src="/assets/images/chat3.svg"
+                              className={
+                                scale +
+                                " drop-shadow-3xl cursor-pointer hover:drop-shadow-4xl"
+                              }
+                              onClick={() =>
+                                setConsultation(
+                                  <>
+                                    相談内容 3 :
+                                    <br />
+                                    ご相談内容をメッセージでお送りください。
+                                    <br />
+                                    AIの返信は一度の応答に1分程度掛かりますので、
+                                    <br />
+                                    ご送信後、少々おまちください。
+                                  </>,
+                                )
+                              }
+                            />
+                            <img
+                              src="/assets/images/chat4.svg"
+                              className={
+                                scale +
+                                " drop-shadow-3xl cursor-pointer hover:drop-shadow-4xl"
+                              }
+                              onClick={() =>
+                                setConsultation(
+                                  <>
+                                    相談内容 4 :
+                                    <br />
+                                    ご相談内容をメッセージでお送りください。
+                                    <br />
+                                    AIの返信は一度の応答に1分程度掛かりますので、
+                                    <br />
+                                    ご送信後、少々おまちください。
+                                  </>,
+                                )
+                              }
+                            />
+                            <img
+                              src="/assets/images/chat5.svg"
+                              className={
+                                scale +
+                                " drop-shadow-3xl cursor-pointer hover:drop-shadow-4xl"
+                              }
+                              onClick={() =>
+                                setConsultation(
+                                  <>
+                                    相談内容 5 :
+                                    <br />
+                                    こんにちは、
+                                    <br />
+                                    ようこそお越しくださいました
+                                    <br />
+                                    ご相談内容をメッセージでお送りください。
+                                  </>,
+                                )
+                              }
+                            />
+                          </div>
+                          <div className={"flex " + gap1}>
+                            <img
+                              src="/assets/images/chat6.svg"
+                              className={
+                                scale +
+                                " drop-shadow-3xl cursor-pointer hover:drop-shadow-4xl"
+                              }
+                              onClick={() =>
+                                setConsultation(
+                                  <>
+                                    相談内容 6 :
+                                    <br />
+                                    こんにちは、
+                                    <br />
+                                    ようこそお越しくださいました
+                                    <br />
+                                    ご相談内容をメッセージでお送りください。
+                                  </>,
+                                )
+                              }
+                            />
+                            <img
+                              src="/assets/images/chat7.svg"
+                              className={
+                                scale +
+                                " drop-shadow-3xl cursor-pointer hover:drop-shadow-4xl"
+                              }
+                              onClick={() =>
+                                setConsultation(
+                                  <>
+                                    相談内容 7 :
+                                    <br />
+                                    ご相談内容をメッセージでお送りください。
+                                    <br />
+                                    AIの返信は一度の応答に1分程度掛かりますので、
+                                    <br />
+                                    ご送信後、少々おまちください。
+                                  </>,
+                                )
+                              }
+                            />
+                            <img
+                              src="/assets/images/chat8.svg"
+                              className={
+                                scale +
+                                " drop-shadow-3xl cursor-pointer hover:drop-shadow-4xl"
+                              }
+                              onClick={() =>
+                                setConsultation(
+                                  <>
+                                    相談内容 8 :
+                                    <br />
+                                    ご相談内容をメッセージでお送りください。
+                                    <br />
+                                    AIの返信は一度の応答に1分程度掛かりますので、
+                                    <br />
+                                    ご送信後、少々おまちください。
+                                  </>,
+                                )
+                              }
+                            />
+                            <img
+                              src="/assets/images/chat9.svg"
+                              className={
+                                scale +
+                                " drop-shadow-3xl cursor-pointer hover:drop-shadow-4xl"
+                              }
+                              onClick={() =>
+                                setConsultation(
+                                  <>
+                                    相談内容 9 :
+                                    <br />
+                                    こんにちは、
+                                    <br />
+                                    ようこそお越しくださいました
+                                    <br />
+                                    ご相談内容をメッセージでお送りください。
+                                  </>,
+                                )
+                              }
+                            />
+                            <img
+                              src="/assets/images/chat10.svg"
+                              className={
+                                scale +
+                                " drop-shadow-3xl cursor-pointer hover:drop-shadow-4xl"
+                              }
+                              onClick={() =>
+                                setConsultation(
+                                  <>
+                                    相談内容 10 :
+                                    <br />
+                                    こんにちは、
+                                    <br />
+                                    ようこそお越しくださいました
+                                    <br />
+                                    ご相談内容をメッセージでお送りください。
+                                  </>,
+                                )
+                              }
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div className={"flex items-center py-16 " + gap}>
+                        <img
+                          src="/assets/images/bear12.svg"
+                          className={scale}
+                        />
+                        <div className={"flex flex-col " + gap1}>
+                          <div className={"flex " + gap1}>
+                            <div className="talk-bubble tri-right round border3 left-top">
+                              <div className="talktext">
+                                <p>{consultation}</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                       <div className="border-t-gray-400 border-t w-full"></div>
                       <p className="text-gray-400 py-3">
                         メッセージを入力してください。
