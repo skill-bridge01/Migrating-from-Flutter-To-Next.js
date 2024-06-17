@@ -1,12 +1,13 @@
 import { FirebaseApp, getApp, getApps, initializeApp } from "firebase/app";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyA0Zx2-KFWQuB0FInNsl6ZRakGVp9KLIJk",
-    authDomain: "fir-mfa-51e82.firebaseapp.com",
-    projectId: "fir-mfa-51e82",
-    storageBucket: "fir-mfa-51e82.appspot.com",
-    messagingSenderId: "481514149212",
-    appId: "1:481514149212:web:9a320a8f00afdd27d6dd99"
+    apiKey: "AIzaSyDniNJJM0IGRe7KJIgxV--P5CGmnkWs5YE",
+    authDomain: "kirihare-test-9833d.firebaseapp.com",
+    projectId: "kirihare-test",
+    storageBucket: "kirihare-test.appspot.com",
+    messagingSenderId: "702239445524",
+    appId: "1:702239445524:web:1dcc5d976177e1f166cd01"
+
   };
 
 let app:FirebaseApp;

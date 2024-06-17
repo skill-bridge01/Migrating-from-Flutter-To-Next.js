@@ -24,7 +24,7 @@ const ButtonFile: React.FC<ButtonFileProps> = ({
 
   const hiddenFileInput = React.useRef(null);
 
-  const handleChange = (event) => {
+  const handleChange = (event:any) => {
     const fileUploaded = event.target.files[0];
   };
 

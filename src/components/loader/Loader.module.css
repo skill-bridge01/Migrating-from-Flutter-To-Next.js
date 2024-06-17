@@ -1,0 +1,26 @@
+/* components/Loader.module.css */
+
+.loader {
+    width: 2.5rem; /* Equivalent to w-10 */
+    height: 2.5rem; /* Equivalent to h-10 */
+    border-radius: 50%; /* Equivalent to rounded-1/2 */
+    background-color: #ffffff;
+    position: relative;
+    box-shadow: 32px 0 #ffffff, -32px 0 #ffffff;
+    animation: flash 0.5s ease-out infinite alternate;
+  }
+  
+  @keyframes flash {
+    0% {
+      background-color: #ffffff22; /* #fff2 */
+      box-shadow: 62px 0 #ffffff22, -62px 0 #ff8c1a; /* Adjusted colors */
+    }
+    50% {
+      background-color: #ff8c1a;
+      box-shadow: 62px 0 #ffffff22, -62px 0 #ffffff22;
+    }
+    100% {
+      background-color: #ffffff22;
+      box-shadow: 62px 0 #ff8c1a, -62px 0 #ffffff22;
+    }
+  }

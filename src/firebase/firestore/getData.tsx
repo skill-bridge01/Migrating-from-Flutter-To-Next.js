@@ -1,4 +1,4 @@
-import firebase_app from "../config";
+import {firebase_app} from "../config";
 // Importing types needed to work with documents in Firestore
 import { getFirestore, doc, getDoc, DocumentReference, DocumentSnapshot, FirestoreError } from "firebase/firestore";
 

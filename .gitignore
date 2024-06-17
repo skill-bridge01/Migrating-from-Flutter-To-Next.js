@@ -38,3 +38,4 @@ next-env.d.ts
 # ide
 .idea
 9337b8d997ce81bcb1224be85097fbc812cb4e95991d795df1a1b50bd3ec7554
+.firebaserc

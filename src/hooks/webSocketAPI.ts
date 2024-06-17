@@ -105,16 +105,30 @@ type Message = {
         console.log("WebSocket connected.");
       };
   
+      // this.socket.onmessage = (event): void => {
+      //   const message = event.data;
+      //   console.log("Received:", message);
+      //   this.handleMessage(JSON.parse(message));
+      // };
       this.socket.onmessage = (event): void => {
         const message = event.data;
         console.log("Received:", message);
-        this.handleMessage(JSON.parse(message));
-      };
+    
+        try {
+            const parsedMessage = JSON.parse(message);
+            this.handleMessage(parsedMessage);
+        } catch (err) {
+            console.error("Error parsing message JSON:", err);
+            // Handle non-JSON message, if necessary
+            // For example, if plain text messages are expected and can be processed
+            this.handlePlainTextMessage(message);
+        }
+    };
   
       this.socket.onclose = (): void => {
         console.log("WebSocket disconnected.");
         this.isOpen = false;
-        setTimeout(() => this.connect(userId), 2000); // Try to reconnect
+        setTimeout(() => this.connect(userId), 1000); // Try to reconnect
       };
   
       this.socket.onerror = (error: Event): void => {
@@ -145,8 +159,12 @@ type Message = {
         }
       }
     }
+
+    handlePlainTextMessage(message: string): void {
+      console.log("Received:", message);
+    }
   
-    handleMessage(message: Message): void {
+    handleMessage(message: any): void {
       // Example handling based on the message type
       if (message.type == "chat") {
         console.log("message:", message.message);

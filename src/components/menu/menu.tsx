@@ -1,166 +1,157 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Button from "@/components/button/button.tsx";
-import { useDispatch } from "react-redux";
 import {
   updateConsultation,
   updateConsultationMenu,
   updateSelfCareMenu,
+  updateMannedConsultation,
+  updateConsultationReservation,
+  updateSelfCheck,
 } from "../../store/chat";
-import { selectChat } from "@/store/chat";
-import { useSelector } from "react-redux";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { selectPhone } from "@/store/phone";
-// import DateTimePicker from "react-datetime-picker";
-// import Datetime from "react-datetime";
-
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
-// @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
-import InputLabel from "@material-ui/core/InputLabel";
-import FormControl from "@material-ui/core/FormControl";
-const style = {
-  label: {
-    color: "rgba(0, 0, 0, 0.46)",
-    cursor: "pointer",
-    display: "inline-flex",
-    fontSize: "20px",
-    transition: "0.3s ease all",
-    lineHeight: "1.428571429",
-    fontWeight: "400",
-    paddingLeft: "0",
-  },
-};
+import "dayjs/locale/ja";
 
-const useStyles = makeStyles(style);
-
-type ValuePiece = Date | null;
-
-type Value = ValuePiece | [ValuePiece, ValuePiece];
-// interface Props {
-//   handleConsultation: () => void;
-// }
+// type ValuePiece = Date | null;
+// type Value = ValuePiece | [ValuePiece, ValuePiece];
 const Menu = () => {
-  const classes = useStyles();
-  // const [value, setValue] = React.useState<Dayjs | null>(dayjs('2022-04-17T15:30'));
-  // const [value, setValue] = useState<Value>(new Date());
   const [value, setValue] = React.useState<Dayjs | null>(dayjs(new Date()));
-  console.log("value", value?.$y, value?.$M+1, value?.$D,value?.$H,value?.$m, );
   const [selfCareMenu, setSelfCareMenu] = useState(false);
+  const [consultationReservation, setConsultationReservation] = useState("");
+  const [consultationReservationMenu, setConsultationReservationMenu] =
+    useState("");
   const [mannedConsultation, setMannedConsultation] = useState(false);
-  const [phone, setPhone] = useState("");
+  const [mannedConsultationMenu, setMannedConsultationMenu] = useState(false);
+  const [selfCheck, setSelfCheck] = useState(false);
   const dispatch = useAppDispatch();
   const handleConsultationMenu = () => {
     setSelfCareMenu(false);
     setMannedConsultation(false);
+    setMannedConsultationMenu(false);
     dispatch(updateConsultationMenu(true));
+    setConsultationReservation("");
+    setSelfCheck(false);
+  };
+  const handleConsultationReservation = () => {
+    setConsultationReservation(
+      `ハラスメント相談の希望日時（${value?.get("year")}年${(value?.get("month") ?? 0) + 1}月${value?.get("date")}日 ${value?.get("hour")}:${value?.get("minute")}）が送信されました。ハラスメント相談にはチャット/ビデオ通話(Google Meet)/お電話がご利用可能です。リクエストが無い場合はお電話になりますので、ご希望がありましたら事前にチャットにご希望のコミニケーション手段をお知らせください。`,
+    );
+    dispatch(
+      updateConsultationReservation(
+        `ハラスメント相談の希望日時（${value?.get("year")}年${(value?.get("month") ?? 0) + 1}月${value?.get("date")}日 ${value?.get("hour")}:${value?.get("minute")}）が送信されました。ハラスメント相談にはチャット/ビデオ通話(Google Meet)/お電話がご利用可能です。リクエストが無い場合はお電話になりますので、ご希望がありましたら事前にチャットにご希望のコミニケーション手段をお知らせください。`,
+      ),
+    );
   };
   const handleConsultation = () => {
     setMannedConsultation(false);
     setSelfCareMenu(false);
+    setMannedConsultationMenu(false);
     dispatch(updateConsultation(true));
+    setConsultationReservation("");
+    setSelfCheck(false);
   };
   const handleSelfCareMenu = () => {
+    setConsultationReservation("");
     setMannedConsultation(false);
     setSelfCareMenu(true);
+    setMannedConsultationMenu(false);
     dispatch(updateSelfCareMenu(true));
-    // goToBottom();
+    setSelfCheck(false);
+  };
+
+  const handleMannedConsultationMenu = () => {
+    setConsultationReservation("");
+    setSelfCareMenu(false);
+    setMannedConsultation(false);
+    setMannedConsultationMenu(true);
+    dispatch(updateMannedConsultation(true));
+    setSelfCheck(false);
   };
   const handleMannedConsultation = () => {
+    setConsultationReservation("");
     setSelfCareMenu(false);
+    setMannedConsultationMenu(false);
     setMannedConsultation(true);
-    // dispatch(updateSelfCareMenu(true));
-    // goToBottom();
+    setSelfCheck(false);
   };
 
-  // const goToBottom = () => {
-  // 	window.scrollTo({
-  // 		// top: 0,      //Go to top
-  //     top: document.documentElement.scrollHeight,   // Go to bottom
-  // 		behavior: 'smooth',
-  // 	});
-  // };
-  // useEffect(() => {
-  //   console.log("click1313");
-  //   // if (sharedState) {
-  //   //   setSharedState(false);
-  //   // }
-  // }, []);
-  // export default function Menu({handleConsultation}) {
-  // const handleConsultation=()=>{
-
-  // }
+  const handleSelfCheck = () => {
+    setConsultationReservation("");
+    setMannedConsultation(false);
+    setSelfCareMenu(false);
+    setSelfCheck(true);
+    setMannedConsultationMenu(false);
+    dispatch(updateSelfCheck(true));
+  };
   return (
-    <div className="w-full pt-5 pb-3">
+    <div className="w-full pt-5 pb-3 items-center ">
       <div className="flex gap-3 justify-center">
         <div className="flex flex-col gap-5 mt-4 items-center">
-          <h1 className="text-teal text-7xl tracking-widest">MENU</h1>
-          <p className="text-gray-dark text-lg pt-3 flex flex-col">
+          <h1 className="text-teal xl:text-7xl lg:text-5xl md:text-4xl sm:text-6xl text-5xl tracking-widest">
+            MENU
+          </h1>
+          <p className="text-gray-dark xl:text-lg md:text-base text-lg pt-3 flex flex-col">
             <span>以下のメニューから</span>
             <span>お選びください。</span>
           </p>
         </div>
-        {/* <Image
-            src="/assets/images/bear.png"
-            alt="Bear Logo"
-            width={100}
-            height={80}
-            priority
-        /> */}
-        <img src="/assets/images/bear.png" className="w-20 h-32" />
+        <img
+          src="/assets/images/bear.png"
+          className="lg:w-20 lg:h-32 md:w-16 md:h-24 w-20 h-32"
+        />
       </div>
       <div>
-        <p className="mt-14 border-l-8 border-gray-dark pl-3 text-3xl">
+        <p className="xl:mt-14 mt-6 border-l-8 border-gray-dark pl-3 xl:text-3xl text-2xl">
           チャットサービスメニュー
         </p>
-        <p className="mt-6 border-gray-dark pl-5 text-lg">
+        <p className="mt-6 border-gray-dark pl-5 xl:text-lg text-base">
           AIとのチャットサービスは24時間ご利用可能。
         </p>
-        <p className=" border-gray-dark pl-5 text-lg">
+        <p className=" border-gray-dark pl-5 xl:text-lg text-base">
           サイト右のチャット相談からお入りください。
         </p>
-        <div className="flex gap-6 mt-10 text-center">
-          {/* <Button onClick="" title="AIお悩み相談 Menu" /> */}
+        <div className="flex flex-col xl:flex-row xl:gap-5 gap-2 xl:mt-2 mt-2 text-center">
           <button
             onClick={handleConsultationMenu}
             rel="noopener noreferrer"
-            className="px-4 w-56 h-20 flex justify-center items-center border rounded-2xl bg-teal-dark"
+            className="lg:px-4 px-2 max-w-full xl:h-20 h-16 flex justify-center items-center border rounded-xl bg-teal-dark"
           >
-            <h1 className="flex justify-center items-center text-white text-lg">
+            <h1 className="flex justify-center items-center text-white xl:text-lg text-base leading-4">
               AIお悩み相談 Menu
             </h1>
           </button>
           <button
             onClick={handleConsultation}
             rel="noopener noreferrer"
-            className="px-4 w-56 h-20 flex justify-center items-center border rounded-2xl bg-teal-dark"
+            className="lg:px-4 px-2 max-w-full xl:h-20 h-16 flex justify-center items-center border rounded-xl bg-teal-dark"
           >
-            <h1 className="flex justify-center items-center text-white text-lg">
+            <h1 className="flex justify-center items-center text-white xl:text-lg text-base leading-4">
               AIハラスメント診断
             </h1>
           </button>
         </div>
       </div>
       <div>
-        <p className="mt-20 border-l-8 border-gray-dark pl-3 text-3xl">
+        <p className="xl:mt-14 mt-10 border-l-8 border-gray-dark pl-3 xl:text-3xl text-2xl">
           セルフサービスメニュー
         </p>
-        <p className="mt-6 border-gray-dark pl-5 text-lg">
+        <p className="mt-6 border-gray-dark pl-5 xl:text-lg text-base">
           ご自身のメンタルヘルスをチェックしたり、解消するお手伝いをいたします。
         </p>
-        <p className=" border-gray-dark pl-5 text-lg">
+        <p className=" border-gray-dark pl-5 xl:text-lg text-base">
           以下のサービスよりお選びください。
         </p>
-        <div className="flex gap-6 mt-10 text-center">
+        <div className="flex flex-col xl:flex-row xl:gap-5 gap-2 xl:mt-2 mt-2 text-center">
           <button
             onClick={handleSelfCareMenu}
             rel="noopener noreferrer"
-            className="px-4 w-56 h-20 flex justify-center items-center border rounded-2xl bg-teal-dark"
+            className="lg:px-4 px-2 max-w-full xl:w-56 xl:h-20 h-16 flex justify-center items-center border rounded-xl bg-teal-dark"
           >
-            <h1 className="flex justify-center items-center text-white text-lg">
+            <h1 className="flex justify-center items-center text-white xl:text-lg text-base">
               セルフケア MENU
             </h1>
           </button>
@@ -169,72 +160,227 @@ const Menu = () => {
             title="心理テスト"
           />
         </div>
-        <div className="flex gap-6 mt-10 text-center">
+        <div className="flex flex-col xl:flex-row xl:gap-5 gap-2 xl:mt-2 mt-2 text-center">
           <Button
             link="https://kirihare-web.jp/E73ArfjpADchHAyN9ihb34FTVdD7kcjuC7nHLhkJiCQE3asNMe6s/?m=harassmentview&webLogin=true&l=XwtmjNKXWNdUA_fEEIm64iHIivQYutHeQLq6Tl5aAyiDYsbvDNNlhkyPiqqgJxH3"
             title="ハラスメント Web報告"
           />
           <button
-            onClick={handleMannedConsultation}
+            onClick={handleMannedConsultationMenu}
             rel="noopener noreferrer"
-            className="px-4 w-56 h-20 flex justify-center items-center border rounded-2xl bg-teal-dark"
+            className="lg:px-4 px-2 max-w-full xl:w-56 xl:h-20 h-16 flex justify-center items-center border rounded-xl bg-teal-dark"
           >
-            <h1 className="flex justify-center items-center text-white text-lg">
+            <h1 className="flex justify-center items-center text-white 2xl:text-lg text-base leading-4">
               有人ハラスメント 相談窓口
             </h1>
           </button>
         </div>
+        <div className="flex flex-col xl:flex-row xl:gap-5 gap-2 xl:mt-2 mt-2 text-center">
+          <button
+            onClick={handleSelfCheck}
+            rel="noopener noreferrer"
+            className="lg:px-4 px-2 max-w-full xl:w-56 xl:h-20 h-16 flex justify-center items-center border rounded-xl bg-teal-dark"
+          >
+            <h1 className="flex justify-center items-center text-white xl:text-lg text-base">
+              心のセルフチェック
+            </h1>
+          </button>
+          <button
+            rel="noopener noreferrer"
+            className="hidden lg:px-4 px-2 max-w-full xl:w-56 xl:h-20 h-16 xl:flex justify-center items-center bg-white"
+          >
+            <h1 className="flex justify-center items-center text-white xl:text-lg text-base"></h1>
+          </button>
+          {/* <Button
+            link="https://xs805903.xsrv.jp/kirihare001/shinri-test/"
+            title="心理テスト"
+          /> */}
+        </div>
       </div>
       {selfCareMenu && (
-        <div className="pt-10 pl-20 pr-48">
-          <p className="pb-4 text-xl">セルフケア MENU</p>
-          <a
-            target="_blank"
-            href="https://kirihare-web.jp/E73ArfjpADchHAyN9ihb34FTVdD7kcjuC7nHLhkJiCQE3asNMe6s/?m=kokoronikki&webLogin=true&l=XwtmjNKXWNdUA_fEEIm64iHIivQYutHeQLq6Tl5aAyiDYsbvDNNlhkyPiqqgJxH3"
+        <div className="pt-10 mx-auto flex flex-col items-center w-full">
+          <div
+            rel="noopener noreferrer"
+            className="px-4 xl:w-64 w-full xl:h-16 h-12 flex justify-center items-center border rounded-lg bg-blue-400 xl:mb-3 mb-1"
           >
-            <img
-              src="https://kirihare.blob.core.windows.net/corporate/webapp/submenu2/a_pc.png"
-              className="border-2 border-green p-1 rounded-lg mb-2"
-            />
-          </a>
-          <a href="https://kirihare.net/healthcare/\" target="_blank">
-            <img
-              src="https://kirihare.blob.core.windows.net/corporate/webapp/submenu2/b_pc.png"
-              className="border-2 border-green p-1 rounded-lg mb-2"
-            />
-          </a>
-          <a
-            href="https://kirihare.blob.core.windows.net/corporate/jiritukunren/pc/index.html"
-            target="_blank"
+            <h1 className="flex justify-center items-center text-black xl:text-xl font-bold lg:text-base text-sm">
+              セルフケア MENU
+            </h1>
+          </div>
+          <button
+            rel="noopener noreferrer"
+            className="px-4 xl:w-64 w-full xl:h-16 h-12 flex justify-center items-center border rounded-lg bg-green xl:mb-3 mb-1"
           >
-            <img
-              src="https://kirihare.blob.core.windows.net/corporate/webapp/submenu2/c_pc.png"
-              className="border-2 border-green p-1 rounded-lg mb-2"
-            />
-          </a>
-          <a
-            href="https://kirihare-web.jp/E73ArfjpADchHAyN9ihb34FTVdD7kcjuC7nHLhkJiCQE3asNMe6s/?m=columnmethod&webLogin=true&l=XwtmjNKXWNdUA_fEEIm64iHIivQYutHeQLq6Tl5aAyiDYsbvDNNlhkyPiqqgJxH3\"
-            target="_blank"
+            <a
+              className="flex justify-center items-center text-black xl:text-lg lg:text-base text-sm"
+              target="_blank"
+              href="https://kirihare-web.jp/E73ArfjpADchHAyN9ihb34FTVdD7kcjuC7nHLhkJiCQE3asNMe6s/?m=kokoronikki&webLogin=true&l=XwtmjNKXWNdUA_fEEIm64iHIivQYutHeQLq6Tl5aAyiDYsbvDNNlhkyPiqqgJxH3"
+            >
+              ① 一行日記
+            </a>
+          </button>
+          <button
+            rel="noopener noreferrer"
+            className="px-4 xl:w-64 w-full xl:h-16 h-12 flex justify-center items-center border rounded-lg bg-green xl:mb-3 mb-1"
           >
-            <img
-              src="https://kirihare.blob.core.windows.net/corporate/webapp/submenu2/d_pc.png"
-              className="border-2 border-green p-1 rounded-lg "
-            />
-          </a>
+            <a
+              className="flex justify-center items-center text-black xl:text-lg lg:text-base text-sm"
+              href="https://kirihare.blob.core.windows.net/corporate/jiritukunren/pc/index.html"
+              target="_blank"
+            >
+              ② 自律訓練
+            </a>
+          </button>
+          <button
+            rel="noopener noreferrer"
+            className="px-4 xl:w-64 w-full xl:h-16 h-12 flex justify-center items-center border rounded-lg bg-green xl:mb-3 mb-1"
+          >
+            <a
+              className="flex justify-center items-center text-black xl:text-lg lg:text-base text-sm leading-2"
+              href="https://kirihare.net/healthcare/\"
+              target="_blank"
+            >
+              ③ マインドフルネス
+            </a>
+          </button>
+          <button
+            rel="noopener noreferrer"
+            className="px-4 xl:w-64 w-full xl:h-16 h-12 flex justify-center items-center border rounded-lg bg-green xl:mb-3 mb-1"
+          >
+            <a
+              className="flex justify-center items-center text-black xl:text-lg lg:text-base text-sm"
+              href="https://kirihare-web.jp/E73ArfjpADchHAyN9ihb34FTVdD7kcjuC7nHLhkJiCQE3asNMe6s/?m=columnmethod&webLogin=true&l=choNWp4LTRsf8qwS0rw_-nd4RfA-ufyQk2ofvRRI2iVlNGiv7fhQ6Okxdmcbzie0"
+              target="_blank"
+            >
+              ④ コラム法
+            </a>
+          </button>
+        </div>
+      )}
+      {mannedConsultationMenu && (
+        <div className="pt-2 mx-auto flex flex-col items-center">
+          <div
+            rel="noopener noreferrer"
+            className="mx-auto w-full lg:px-5 px-2 text-center h-16 flex justify-center items-center border rounded-lg bg-blue-400 mt-10 mb-5"
+          >
+            <h1 className="flex justify-center items-center text-white xl:text-lg text-base leading-4">
+              有人ハラスメント 相談窓口
+            </h1>
+          </div>
+          <p className="xl:text-lg text-sm">
+            [有人]ハラスメント相談の当日予約を希望される場合は、現時刻より3時間先の時刻から予約可能です。
+            ※ご予約希望日が既に埋まっている場合は、別日程をご提案させていただく場合がございます。
+            その場合は、土日祝日を除く営業日に担当スタッフが確認し、24時間以内にご返信いたします。
+          </p>
+          <button
+            rel="noopener noreferrer"
+            onClick={handleMannedConsultation}
+            className="mx-auto w-full h-16 flex justify-center items-center border rounded-lg bg-green  mt-5"
+          >
+            <h1 className="flex justify-center items-center text-white text-sm">
+              有人対応ハラスメント相談(電話/ビデオ通話/チャット)
+            </h1>
+          </button>
         </div>
       )}
       {mannedConsultation && (
-        <div className="pt-10 px-10">
-          <p className="pb-4 text-xl ">有人ハラスメント 相談窓口</p>
-          <InputLabel className={classes.label}>日時ピッカー</InputLabel>
+        <div className="pt-2 mx-auto flex flex-col items-center">
+          <div
+            rel="noopener noreferrer"
+            className="px-2 w-full h-16 text-center flex justify-center items-center border rounded-lg bg-blue-400 mt-10 mb-3"
+          >
+            <h1 className="flex justify-center items-center text-white xl:text-lg text-base">
+              有人ハラスメント 相談窓口
+            </h1>
+          </div>
           <br />
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DateTimePicker
-              // label="Controlled picker"
-              value={value}
-              onChange={(newValue) => setValue(newValue)}
-            />
-          </LocalizationProvider>
+          <p className="pb-4 text-md text-gray-600">
+            予約時間を選択してください
+          </p>
+          <div className="flex items-baseline gap-4">
+            <LocalizationProvider adapterLocale="ja" dateAdapter={AdapterDayjs}>
+              <DateTimePicker
+                // label="Controlled picker"
+                value={value}
+                onChange={(newValue) => setValue(newValue)}
+              />
+            </LocalizationProvider>
+          </div>
+          <div className="flex justify-end w-full">
+            <button
+              onClick={handleConsultationReservation}
+              className="bg-blue-500 px-4 py-2 rounded-lg text-md text-white mt-3"
+            >
+              完 了
+            </button>
+          </div>
+          <div className="pt-5 xl:text-lg text-sm">
+            {consultationReservation}
+          </div>
+        </div>
+      )}
+      {selfCheck && (
+        <div className="pt-10 mx-auto flex flex-col items-center w-full">
+          <div
+            rel="noopener noreferrer"
+            className="px-4 xl:w-64 w-full xl:h-16 h-12 flex justify-center items-center border rounded-lg bg-blue-400 xl:mb-3 mb-1"
+          >
+            <h1 className="flex justify-center items-center text-black xl:text-xl font-bold lg:text-base text-sm">
+              心のセルフチェック
+            </h1>
+          </div>
+          <button
+            rel="noopener noreferrer"
+            className="px-4 xl:w-64 w-full xl:h-16 h-12 flex justify-center items-center border rounded-lg bg-green xl:mb-3 mb-1"
+          >
+            <a
+              className=" text-black xl:text-lg lg:text-base text-sm"
+              target="_blank"
+              href="https://kirihare-web.jp/E73ArfjpADchHAyN9ihb34FTVdD7kcjuC7nHLhkJiCQE3asNMe6s/?checklist=pss4&webLogin=true&l=vedSccDg5vIbWmSdQpvPWm8vmoyeqiUGj1U--R5qDzF3jZCS5gRw89RcuydbzFUK"
+            >
+              <div className="flex flex-col">
+                <p>① ストレスチェック</p>
+                <p>ショートバージョン</p>
+              </div>
+            </a>
+          </button>
+          <button
+            rel="noopener noreferrer"
+            className="px-4 xl:w-64 w-full xl:h-16 h-12 flex justify-center items-center border rounded-lg bg-green xl:mb-3 mb-1"
+          >
+            <a
+              className="flex justify-center items-center text-black xl:text-lg lg:text-base text-sm"
+              href="https://kirihare-web.jp/E73ArfjpADchHAyN9ihb34FTVdD7kcjuC7nHLhkJiCQE3asNMe6s/?checklist=family&webLogin=true&l=vedSccDg5vIbWmSdQpvPWm8vmoyeqiUGj1U--R5qDzF3jZCS5gRw89RcuydbzFUK"
+              target="_blank"
+            >
+              ② 家族関係
+            </a>
+          </button>
+          <button
+            rel="noopener noreferrer"
+            className="px-4 xl:w-64 w-full xl:h-16 h-12 flex justify-center items-center border rounded-lg bg-green xl:mb-3 mb-1"
+          >
+            <a
+              className="flex flex-col justify-center items-center text-black xl:text-lg lg:text-base text-sm leading-2"
+              href="https://kirihare-web.jp/E73ArfjpADchHAyN9ihb34FTVdD7kcjuC7nHLhkJiCQE3asNMe6s/?checklist=stresscheck&webLogin=true&l=vedSccDg5vIbWmSdQpvPWm8vmoyeqiUGj1U--R5qDzF3jZCS5gRw89RcuydbzFUK"
+              target="_blank"
+            >
+              <span>③ ストレスチェック</span>
+              <span>ロングバージョン</span>
+            </a>
+          </button>
+          <button
+            rel="noopener noreferrer"
+            className="px-4 xl:w-64 w-full xl:h-16 h-12 flex justify-center items-center border rounded-lg bg-green xl:mb-3 mb-1"
+          >
+            <a
+              className="flex justify-center items-center text-black xl:text-lg lg:text-base text-sm"
+              href="https://kirihare-web.jp/E73ArfjpADchHAyN9ihb34FTVdD7kcjuC7nHLhkJiCQE3asNMe6s/?checklist=qidsj&webLogin=true&l=vedSccDg5vIbWmSdQpvPWm8vmoyeqiUGj1U--R5qDzF3jZCS5gRw89RcuydbzFUK"
+              target="_blank"
+            >
+              ④ うつ度チェック
+            </a>
+          </button>
         </div>
       )}
     </div>

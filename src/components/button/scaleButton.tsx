@@ -31,7 +31,7 @@ export default function ScaleButton({ onClick, label, ...props }: ButtonProps) {
     <div>
       <button
         type="button"
-        className="border rounded-lg bg-brown py-2 px-4 text-white text-lg"
+        className="border rounded-lg bg-brown py-2 px-4 text-white xl:text-lg text-base"
         {...props}
       >
         {label}

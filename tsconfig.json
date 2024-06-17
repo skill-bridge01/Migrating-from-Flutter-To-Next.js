@@ -18,10 +18,24 @@
         "name": "next"
       }
     ],
+    // "typeRoots": ["./node_modules/@types", "./types"],
+    // "types": ["otp-input-react"],
     "paths": {
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/firebase/firebase.js", "src/components/phoneAuth/phoneAuth.tsx", "src/app/phone/page.js", "src/firebase/firebaseConfig.tsx", "src/app/employee/twoPhaseAuth/page.js", "src/app/user/page.js"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/firebase/firebase.js",
+    "src/components/phoneAuth/phoneAuth.tsx",
+    "src/app/phone/page.js",
+    "src/firebase/firebaseConfig.tsx",
+    "src/app/employee/twoPhaseAuth/page.js",
+    "src/app/user/page.js",
+    "src/app/employee/checkTwoPhaseCode/page.js", 
+    "src/components/menu/menu.tsx", "src/app/save-payload/page.jsx"  ],
   "exclude": ["node_modules"]
 }

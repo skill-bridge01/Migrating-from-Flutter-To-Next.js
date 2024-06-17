@@ -59,4 +59,7 @@ export interface IChat {
   consultation: boolean;
   menu: boolean;
   selfCareMenu: boolean;
+  mannedConsultation:boolean;
+  selfCheck:boolean;
+  consultationReservation:string,
 }

@@ -12,7 +12,7 @@ const initialState: UserState = {
     menuImageUrl: "",
     menuJson: "",
     phone: "",
-    twoPhaseAuth: false,
+    twoPhaseAuth: true,
     userId: "",
   },
   isLogin:
@@ -30,12 +30,18 @@ export const userSlice = createSlice({
         menuImageUrl: "",
         menuJson: "",
         phone: "",
-        twoPhaseAuth: false,
+        twoPhaseAuth: true,
         userId: "",
       };
     },
     updateUser: (state, action) => {
       state.user = action.payload;
+    },
+    updateUserID: (state, action) => {
+      state.user.userId = action.payload;
+    },
+    updateTwoPhaseAuth: (state, action) => {
+      state.user.twoPhaseAuth = action.payload;
     },
     logIn: (state, action) => {
       localStorage.setItem("token", action.payload);
@@ -49,7 +55,7 @@ export const userSlice = createSlice({
         menuImageUrl: "",
         menuJson: "",
         phone: "",
-        twoPhaseAuth: false,
+        twoPhaseAuth: true,
         userId: "",
       };
       state.isLogin = false;
@@ -62,6 +68,8 @@ export const userSlice = createSlice({
 export const {
   initUser,
   updateUser,
+  updateUserID,
+  updateTwoPhaseAuth,
   logIn,
   logOut,
 } = userSlice.actions;

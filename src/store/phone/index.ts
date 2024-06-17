@@ -24,7 +24,7 @@ export const phoneSlice = createSlice({
       };
     },
     updatePhone: (state, action) => {
-      state.phone = action.payload;
+      state.phone.phone = action.payload;
     },
     verifyPhone: (state, action) => {
       state.phone.verify = action.payload;

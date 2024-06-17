@@ -1,17 +1,24 @@
 "use client";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import useState from "react-usestateref";
 import { toastNotification } from "../../components/ToastNTF";
 import ButtonPrimary from "@/components/shared/Button/ButtonPrimary";
 import { useMediaQuery } from "react-responsive";
 import React, { FormEvent, ChangeEvent } from "react";
 import signIn from "@/firebase/auth/signin";
-
+import { selectUser, updateUserID, updateTwoPhaseAuth } from "../../store/user";
+import { useAuthContext } from "@/context/AuthContext";
+interface User {
+  id: number;
+  name: string;
+}
 const LoginPage = () => {
+  const userIdState = useSelector(selectUser);
   //   const { connected, publicKey, disconnect } = useWallet();
+  const { user } = useAuthContext() as { user: User | null };
   const [invalidForm, setInvalidForm, invalidFormRef] = useState(true);
   const [invalidEmail, setInvalidEmail, invalidEmailRef] = useState(false);
   const [invalidPass, setInvalidPass, invalidPassRef] = useState(false);
@@ -20,12 +27,62 @@ const LoginPage = () => {
   const [email, setEmail] = React.useState<string>("");
   const [password, setPassword] = React.useState<string>("");
   const router = useRouter();
+  const dispatch = useDispatch();
   const params = {
     mail: email,
     password: password,
     device: "pc1",
     newMenu: true,
   };
+
+  const params1 = useSearchParams();
+
+  const params2 = {
+    device:"pc",
+    m: params1.get("m"),
+    p: params1.get("p"),
+  };
+
+  const connectSlackAccount = async () => {
+    console.log("Sign M, P", params1.get("m"), params1.get("p"));
+
+    if (params1.get("m") && params1.get("p")) {
+      console.log("parms123", params1.get("m"), params1.get("p"));
+      const response = await axios.post(
+        "https://kirihare-web.jp/slack/applogin",
+        params2,
+      );
+      console.log("response", response);
+
+      
+
+      if (response.data.result !== null) {
+        dispatch(updateUserID(response.data.userId));
+        if (response.data.twoPhaseAuth == false) {
+          dispatch(updateTwoPhaseAuth(false));
+          // toastNotification("ログインしました", "success", 3000);
+          return router.push("/chatpage");
+        } else {
+          return router.push("/employee/twoPhaseAuth");
+        }
+      } else {
+        router.push("/signin");
+        console.log("error1");
+      }
+
+    }
+  };
+
+  // const params1 = useSearchParams();
+
+  // console.log("parms", params1.get('m'))
+
+  React.useEffect(() => {
+    connectSlackAccount();
+    if (userIdState.user.userId && userIdState.user.twoPhaseAuth === false) {
+      router.push("/chatpage");
+    }
+  }, []);
 
   useEffect(() => {
     // disconnect();
@@ -60,34 +117,52 @@ const LoginPage = () => {
       setInvalidPass(true);
     }
     if (!invalidEmailRef.current && !invalidPassRef.current) {
-      const { result, error } = await signIn(email, password);
+      // const { result, error } = await signIn(email, password);
 
-      if (error) {
+      // if (error) {
+      //   toastNotification(
+      //     "メールアドレスかパスワードが異なります",
+      //     "error",
+      //     3000,
+      //   );
+      //   return console.log("Email and Password are incorrect", error);
+      // }
+
+      // // else successful
+      // console.log("Signin Success", result);
+      // toastNotification("ログインしました", "success", 3000);
+      const response = await axios.post(
+        "https://kirihare-web.jp/employee/webUser",
+        params,
+      );
+      console.log("response", response);
+      if (response.data.result !== null) {
+        dispatch(updateUserID(response.data.userId));
+        console.log("userID", response.data.userId);
+        console.log("twoPhaseAuth", response.data.twoPhaseAuth);
+        if (response.data.twoPhaseAuth == false) {
+          dispatch(updateTwoPhaseAuth(false));
+          toastNotification("ログインしました", "success", 3000);
+          return router.push("/chatpage");
+        } else {
+          return router.push("/employee/twoPhaseAuth");
+        }
+      } else {
         toastNotification(
           "メールアドレスかパスワードが異なります",
           "error",
           3000,
         );
-        return console.log("Email and Password are incorrect", error);
+        console.log("error1");
       }
-
-      // else successful
-      console.log("Signin Success", result);
-      toastNotification("ご登録おめでとうございます", "success", 3000);
-      const response = await axios.post(
-        "https://kirihare-web.jp/employee/webUser",
-        params,
-      );
-      if (response) {
-
-
-        console.log('twoPhaseAuth', response.data.twoPhaseAuth)
-        if(response.data.twoPhaseAuth==false){return router.push("/employee/webUser");}
-        else{return router.push("/employee/twoPhaseAuth");}
-        
-      }else{
-        console.log('error')
-      }
+      // if (response === null || response === undefined) {
+      //   toastNotification(
+      //     "メールアドレスかパスワードが異なります",
+      //     "error",
+      //     3000,
+      //   );
+      //   console.log("error");
+      // }
 
       // return router.push("/employee/twoPhaseAuth");
     }
@@ -95,13 +170,13 @@ const LoginPage = () => {
 
   return (
     <>
-      <div className="w-full h-full flex flex-col justify-center items-center py-[20px]">
+      <div className=" w-full h-[100vh] flex flex-col justify-center items-center py-[20px]">
         <div
           className={`${
             isDesktop
               ? "text-[55px]"
               : "2xl:text-[50px] xl:text-[46px] lg:text-[40px] md:text-[36px] sm:text-[33px] text-[30px]"
-          }  text-[#92d692] font-bold font-Inter mt-[80px]`}
+          }  text-[#92d692] font-bold font-Inter mt-0`}
         >
           <span
             style={{
@@ -112,13 +187,13 @@ const LoginPage = () => {
               WebkitTextFillColor: "transparent",
             }}
           >
-            メンタルヘルスケアサービス
+            KIRIHARE AI & HR
           </span>
         </div>
         <div
           className={`${
             isDesktop
-              ? "w-[600px] h-[500px] mt-[60px] pt-[31px]"
+              ? "w-[600px] h-[500px] mt-[30px] pt-[31px]"
               : "2xl:w-[500px] xl:w-[510px] lg:w-[430px] md:w-[440px] sm:w-[420px] 2xl:h-[420px] xl:h-[400px] lg:h-[380px] md:h-[380px] sm:h-[360px] w-[90%] h-[340px] 2xl:mt-[20px] lg:mt-[20px] md:mt-[20px] sm:mt-[18px] mt-[16px] 2xl:pt-[10px] xl:pt-[20px] pt-0"
           } relative`}
         >
