@@ -6,7 +6,7 @@ import {
   faRightFromBracket,
   faCircleQuestion
 } from "@fortawesome/free-solid-svg-icons";
-import { selectUser, logOut } from "../../store/user";
+import { selectUser, logOut, isRecaptcha } from "../../store/user";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 type Props = {
@@ -40,6 +40,8 @@ export default function Header() {
   };
   const phoneVerify = async () => {
     router.push("/employee/twoPhaseAuth");
+    console.log('isRecaptcha')
+    dispatch(isRecaptcha(true));
   };
 
   useEffect(() => {

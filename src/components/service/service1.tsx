@@ -323,6 +323,11 @@ const Service1: React.FC<Props> = ({
       その場合は、土日祝日を除く営業日に担当スタッフが確認し、24時間以内にご返信いたします。
     </>,
   );
+
+  const user = useSelector(selectUser);
+  const planId = user.user.planId;
+
+
   useEffect(() => {
     if (chatState.chat.menu) {
       const handleMessageReceived = (msg: Message) => {
@@ -524,36 +529,32 @@ const Service1: React.FC<Props> = ({
     }
   }, [chatState.chat.mannedConsultation]);
 
-  //
   useEffect(() => {
     if (openTab === 1) {
       if (chatState.chat.onlineHealthRoomMenu) {
         setMsg("心理士カウンセリング予約");
-        setType("question");
         webSocketAPI.sendMessage("message", "心理士カウンセリング予約");
         setMessages((prevMessages: any) => [
           ...prevMessages,
           { message: "心理士カウンセリング予約", type: "question" },
         ]);
-        setSend(true);
+        //setSend(true);
         dispatch(updateOnlineHealthRoomMenu(false));
       }
     }
     if (openTab === 2) {
       if (chatState.chat.onlineHealthRoomMenu) {
         setMsg("心理士カウンセリング予約");
-        setType("question");
         webSocketAPI.sendMessage("message", "心理士カウンセリング予約");
         setMessages2((prevMessages: any) => [
           ...prevMessages,
           { message: "心理士カウンセリング予約", type: "question" },
         ]);
-        setSend2(true);
+        //setSend2(true);
         dispatch(updateOnlineHealthRoomMenu(false));
       }
     }
   }, [chatState.chat.onlineHealthRoomMenu]);
-  //
 
   useEffect(() => {
     if (openTab === 1) {
@@ -958,6 +959,22 @@ const Service1: React.FC<Props> = ({
   const handleChangeMessage3 = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMessage3(e.target.value);
   };
+
+  const shouldDisplayTab = (tabIndex: number) => {
+    const plansToHideTab1 = ['PLAN5', 'PLAN6',];
+    const plansToHideTab2 = ['PLAN1', 'PLAN2','PLAN3','PLAN4'];
+
+    if(plansToHideTab1.includes(planId)) {
+      // タブ1(AI相談)を非表示
+      return tabIndex !== 1;
+    } else if (plansToHideTab2.includes(planId)) {
+      // タブ2(AIハラスメント相談)を非表示
+      return tabIndex !== 2;
+    }
+    // その他のプランの場合、全てのタブを表示
+    return true;
+  };
+
   useEffect(() => {
     if (send2) {
       const handleMessageReceived = (msg: Message) => {
@@ -1115,50 +1132,55 @@ const Service1: React.FC<Props> = ({
       <div className="xl:w-[90%] sm:w-[95%] w-[98%]">
         <div>
           <ul className="flex " role="tablist">
-            <li
-              className={
-                "flex-auto text-center  text-black border-[5px] bg-yellow-light" +
-                (openTab === 1
-                  ? " border-b-0 border-green rounded-t-2xl border-b-white"
-                  : " border-yellow-dark border-b-green rounded-t-2xl border-r-0") +
-                (openTab === 3 ? "border-r-0" : "")
-              }
-            >
-              <a
-                className="xl:text-2xl xs:text-xl text-base uppercase px-5 xl:py-4 py-3 block leading-5 text-black"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setOpenTab(1);
-                }}
-                data-toggle="tab"
-                href="#link1"
-                role="tablist"
+            {shouldDisplayTab(1) && (
+              <li
+                className={
+                  "flex-auto text-center  text-black border-[5px] bg-yellow-light" +
+                  (openTab === 1
+                    ? " border-b-0 border-green rounded-t-2xl border-b-white"
+                    : " border-yellow-dark border-b-green rounded-t-2xl border-r-0") +
+                  (openTab === 3 ? "border-r-0" : "")
+                }
               >
-                AIお悩み相談
-              </a>
-            </li>
-            <li
-              className={
-                "flex-auto text-center  text-black border-[5px] bg-yellow-light" +
-                (openTab === 2
-                  ? " border-b-0 border-green  rounded-t-2xl border-b-white"
-                  : " border-yellow-dark border-b-green rounded-t-2xl border-l-0 border-r-0")
-              }
-            >
-              <a
-                className="xl:text-2xl xs:text-xl text-base uppercase px-5 xl:py-4 py-3 block leading-5 text-black"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setOpenTab(2);
-                  console.log("tab", openTab);
-                }}
-                data-toggle="tab"
-                href="#link2"
-                role="tablist"
+                <a
+                  className="xl:text-2xl xs:text-xl text-base uppercase px-5 xl:py-4 py-3 block leading-5 text-black"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setOpenTab(1);
+                  }}
+                  data-toggle="tab"
+                  href="#link1"
+                  role="tablist"
+                >
+                  AIお悩み相談
+                </a>
+              </li>
+            )}
+            {shouldDisplayTab(2) && (
+              <li
+                className={
+                  "flex-auto text-center  text-black border-[5px] bg-yellow-light" +
+                  (openTab === 2
+                    ? " border-b-0 border-green  rounded-t-2xl border-b-white"
+                    : " border-yellow-dark border-b-green rounded-t-2xl border-l-0 border-r-0")
+                }
               >
-                AIハラスメント相談
-              </a>
-            </li>
+                <a
+                  className="xl:text-2xl xs:text-xl text-base uppercase px-5 xl:py-4 py-3 block leading-5 text-black"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setOpenTab(2);
+                    console.log("tab", openTab);
+                  }}
+                  data-toggle="tab"
+                  href="#link2"
+                  role="tablist"
+                >
+                  AIハラスメント相談
+                </a>
+              </li>
+            )}
+
             <li
               className={
                 "flex-auto text-center  text-black border-[5px] bg-yellow-light" +
@@ -2105,15 +2127,8 @@ const Service1: React.FC<Props> = ({
       {status == "min" && (
         // <div className="w-full xl:h-24 h-12 px-24 py-6 flex justify-between"></div>
         <div className="w-full xl:h-24 xl:px-24 sm:px-10 px-3 py-6 flex justify-between gap-2">
-          <a
-            href="https://kirihare-web.jp/E73ArfjpADchHAyN9ihb34FTVdD7kcjuC7nHLhkJiCQE3asNMe6s/?m=harassmentview&webLogin=true&l=XwtmjNKXWNdUA_fEEIm64iHIivQYutHeQLq6Tl5aAyiDYsbvDNNlhkyPiqqgJxH3"
-            target="_blank"
-            className="bg-green py-1 rounded-full flex justify-center"
-          >
-            <button className="bg-green px-5 py-1 rounded-full sm:text-base text-sm">
-              ハラスメントWEB報告
-            </button>
-          </a>
+          <div className="px-5 py-1 rounded-full sm:text-base text-sm invisible">
+          </div>
           <button
             className="bg-green px-5 py-1 rounded-full sm:text-base text-sm"
             onClick={onScale}
@@ -2125,15 +2140,8 @@ const Service1: React.FC<Props> = ({
 
       {status == "max" && (
         <div className="w-full xl:h-24 xl:px-24 sm:px-10 px-3 py-6 flex justify-between gap-2">
-          <a
-            href="https://kirihare-web.jp/E73ArfjpADchHAyN9ihb34FTVdD7kcjuC7nHLhkJiCQE3asNMe6s/?m=harassmentview&webLogin=true&l=XwtmjNKXWNdUA_fEEIm64iHIivQYutHeQLq6Tl5aAyiDYsbvDNNlhkyPiqqgJxH3"
-            target="_blank"
-            className="bg-green py-1 rounded-full flex justify-center"
-          >
-            <button className="bg-green px-5 py-1 rounded-full sm:text-base text-sm">
-              ハラスメントWEB報告
-            </button>
-          </a>
+          <div className="px-5 py-1 rounded-full sm:text-base text-sm invisible">
+          </div>
           <button
             className="bg-green px-5 py-1 rounded-full sm:text-base text-sm"
             onClick={onScale}

@@ -257,6 +257,7 @@ const App = () => {
 
   return (
     <div className=" w-full ">
+      {/* <div id="recaptcha-container"></div> */}
       <div className="pb-20 mt-32 bg-slate-600 rounded-2xl 2xl:w-1/3 xl:w-1/2 lg:w-2/3 mx-auto flex flex-col  items-center w-5/6">
         <p
           className="sm:text-5xl text-4xl font-bold pt-28 pb-16"
@@ -264,7 +265,7 @@ const App = () => {
         >
           ツーファクタ認証
         </p>
-        <div className="bg-slate-700 flex flex-col p-5 border-2 rounded-xl w-[500px]">
+        <div className="bg-slate-700 flex flex-col p-5 border-2 rounded-xl">
           <div className="relative w-full">
             <h1 className="text-2xl flex justify-center font-medium text-white pt-10 pb-8">
               電話番号を設定
@@ -283,9 +284,9 @@ const App = () => {
               <p className="text-md text-white pb-2">電話番号:</p>
               <br />
               <p className="text-md text-white pb-2">
-                日本の電話番号の場合は先頭の0は
+                電話番号が「0」から始まる場合は、
                 <br />
-                除外して入力してください
+                最初の「0」を除いて入力します（一部の国・地域を除く）
               </p>
               <br />
               <p className="text-md text-white pb-2">

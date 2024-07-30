@@ -2,13 +2,12 @@ import { initializeApp, getApps } from "firebase/app";
 import "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBRI6tbD1jqUGCL56RSzov2SsCbaSDrJd0",
-  authDomain: "kirihare-web-pc.firebaseapp.com",
-  projectId: "kirihare-web-pc",
-  storageBucket: "kirihare-web-pc.appspot.com",
-  messagingSenderId: "33560212503",
-  appId: "1:33560212503:web:fc389a7920a43c762fd852",
-  measurementId: "G-F3RNCE92FF",
+  apiKey: "AIzaSyAdjijJkQCqqhR_ZDErF8bp5KQ98qJm6-s",
+  authDomain: "kirihare-web.firebaseapp.com",
+  projectId: "kirihare-web",
+  storageBucket: "kirihare-web.appspot.com",
+  messagingSenderId: "363672539637",
+  appId: "1:363672539637:web:5955b17ff54504c1db90bc"
 };
 
 const app = initializeApp(firebaseConfig);

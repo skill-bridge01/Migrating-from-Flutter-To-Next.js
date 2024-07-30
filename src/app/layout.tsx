@@ -9,6 +9,9 @@ import { AuthContextProvider } from "@/context/AuthContext";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { selectUser } from "@/store/user";
+import { Child } from "@/components/Child.tsx";
+import { useDispatch, useSelector } from "react-redux";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,10 +28,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <Provider store={store}>
-        <body className={inter.className}>
+        <body>
           <AuthContextProvider>
-            {children}
-            <div id="recaptcha-container"></div>
+            <Child>
+              {children}
+            </Child>
             <ToastContainer />
           </AuthContextProvider>
         </body>

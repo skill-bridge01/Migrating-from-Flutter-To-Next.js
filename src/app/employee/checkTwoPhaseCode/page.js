@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import "react-phone-input-2/lib/style.css";
 import { selectPhone, phoneReg } from "@/store/phone";
+import {isRecaptcha } from "@/store/user";
 import { toastNotification } from "@/components/ToastNTF";
 import OTPInput from "./OTPInput";
 import { CgSpinner } from "react-icons/cg";
@@ -138,9 +139,10 @@ const App = () => {
           );
           console.log("Phone_response:", response.data.success);
           if (response.data.success == true) {
-            toastNotification("電話認証成功！", "success", 3000);
+            // toastNotification("電話認証成功！", "success", 3000);
             router.push("/chatpage");
             dispatch(phoneReg(false));
+            dispatch(isRecaptcha(false));
           }
           console.log("err333", res);
           setUser(res.user);
@@ -216,6 +218,7 @@ const App = () => {
     console.log("phoneReg", curPhone.phone.phoneReg);
     if (curPhone.phone.phoneReg == true) {
       dispatch(phoneReg(false));
+      // dispatch(isRecaptcha(false));
       router.push("/employee/twoPhaseAuth");
     } else {
       signOut(auth)
@@ -232,12 +235,13 @@ const App = () => {
 
   return (
     <>
+    {/* <div id="recaptcha-container"></div> */}
       <div className="w-full">
         <div className="pb-20 mt-32 bg-slate-600 rounded-2xl 2xl:w-1/3 xl:w-1/2 lg:w-2/3 mx-auto flex flex-col  items-center w-5/6">
           <p className="text-5xl font-bold pt-20 pb-16 text-white">
             ユーザ認証
           </p>
-          <div className="bg-slate-700 flex flex-col p-5 border-2 rounded-xl w-[500px]">
+          <div className="bg-slate-700 flex flex-col p-5 border-2 rounded-xl">
             <div className="py-8 flex flex-col justify-center items-center">
               <h1 className="font-medium text-[16px] leading-[130%] text-white">
                 確認コードは次の宛先に送信されました：

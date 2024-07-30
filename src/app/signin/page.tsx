@@ -3,6 +3,7 @@ import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { isRecaptcha, updateMenuJson, updatePlanID } from "@/store/user";
 import useState from "react-usestateref";
 import { toastNotification } from "../../components/ToastNTF";
 import ButtonPrimary from "@/components/shared/Button/ButtonPrimary";
@@ -79,10 +80,11 @@ const LoginPage = () => {
       if (response.data.result !== null) {
         //TODO:response.data.useMedicalSystem
         dispatch(updateUserID(response.data.userId));
-        if (response.data.twoPhaseAuth == false) {
+        if (response.data.twoPhaseAuth === false) {
           dispatch(updateTwoPhaseAuth(false));
           // toastNotification("ログインしました", "success", 3000);
           return router.push("/chatpage");
+          dispatch(isRecaptcha(false));
         } else {
           dispatch(updatePhone(response.data.phone));
           sendTwoPhaseCode(response.data.userId, response.data.phone);
@@ -225,9 +227,12 @@ const LoginPage = () => {
 
   React.useEffect(() => {
     dispatch(phoneReg(false));
+    dispatch(isRecaptcha(true));
+    
     connectSlackAccount();
     if (userIdState.user.userId && userIdState.user.twoPhaseAuth === false) {
       router.push("/chatpage");
+      dispatch(isRecaptcha(false));
     }
     async function fetchData() {
       const data = await fetchDataFromFirestore(); // Assumed returned type
@@ -274,12 +279,17 @@ const LoginPage = () => {
       if (response.data.result !== null) {
         setUsedId(response.data.userId);
         dispatch(updateUserID(response.data.userId));
-        console.log("userID", response.data.userId);
+        dispatch(updateMenuJson(response.data.menuJson));
+        dispatch(updatePlanID(response.data.planId));
+        console.log("userID###", response.data.userId);
+        console.log("updateMenuJson", response.data.menuJson);
         console.log("twoPhaseAuth", response.data.twoPhaseAuth);
-        if (response.data.twoPhaseAuth == false) {
+        console.log("planId", response.data.planId);
+        if (response.data.twoPhaseAuth === false) {
           dispatch(updateTwoPhaseAuth(false));
           toastNotification("ログインしました", "success", 3000);
           return router.push("/chatpage");
+          dispatch(isRecaptcha(false));
         } else {
           console.log("response.data.phone", response.data.phone);
           dispatch(updatePhone(response.data.phone));
@@ -305,6 +315,7 @@ const LoginPage = () => {
         </div>
       ) : (
         <>
+        {/* <div id="recaptcha-container"></div> */}
           <div className=" w-full h-[100vh] flex flex-col justify-center items-center py-[20px]">
             <div
               className={`${
@@ -436,6 +447,7 @@ const LoginPage = () => {
           </div>
         </>
       )}
+       
     </>
   );
 };

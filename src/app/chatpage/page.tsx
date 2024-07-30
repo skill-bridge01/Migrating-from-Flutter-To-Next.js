@@ -7,8 +7,8 @@ import Service1 from "@/components/service/service1";
 import { useAuthContext } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 // import { useRouter } from "next/router";
-import { selectUser } from "@/store/user";
-import { useSelector } from "react-redux";
+import { selectUser, isRecaptcha } from "@/store/user";
+import { useSelector, useDispatch } from "react-redux";
 import { onAuthStateChanged, getAuth, signOut } from "firebase/auth";
 import { firebase_app } from "@/firebase/config";
 
@@ -22,6 +22,7 @@ interface User {
 export default function Home() {
   // console.log('$$$$$$$$', messaging)
   const userIdState = useSelector(selectUser);
+  const dispatch = useDispatch();
   // console.log('efsef1111', userIdState)
   const [reduction, setReduction] = useState<boolean | undefined>();
   const { user } = useAuthContext() as { user: User | null };
@@ -75,7 +76,10 @@ export default function Home() {
   }, [userIdState.user.userId]);
 
   React.useEffect(() => {
-    // console.log('efsef', userIdState.user.userId)
+    console.log('ChatPage')
+    console.log('ReCatCha@@@@@@', userIdState.user.recaptcha)
+    
+    dispatch(isRecaptcha(false));
     // window.location.reload();
     onAuthStateChanged(auth, (user) => {
       if (user) {

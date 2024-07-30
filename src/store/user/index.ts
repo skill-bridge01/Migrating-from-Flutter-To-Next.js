@@ -12,8 +12,11 @@ const initialState: UserState = {
     menuImageUrl: "",
     menuJson: "",
     phone: "",
+    email: "",
     twoPhaseAuth: true,
     userId: "",
+    planId:"",
+    recaptcha: true
   },
   isLogin:
     typeof localStorage !== "undefined" && localStorage.getItem("token")
@@ -30,8 +33,11 @@ export const userSlice = createSlice({
         menuImageUrl: "",
         menuJson: "",
         phone: "",
+        email: "",
         twoPhaseAuth: true,
         userId: "",
+        planId: "",
+        recaptcha:true,
       };
     },
     updateUser: (state, action) => {
@@ -39,6 +45,15 @@ export const userSlice = createSlice({
     },
     updateUserID: (state, action) => {
       state.user.userId = action.payload;
+    },
+    updateEmail: (state, action) => {
+      state.user.email = action.payload;
+    },
+    updatePlanID: (state, action) => {
+      state.user.planId = action.payload;
+    },
+    updateMenuJson: (state, action) => {
+      state.user.menuJson = action.payload;
     },
     updateTwoPhaseAuth: (state, action) => {
       state.user.twoPhaseAuth = action.payload;
@@ -50,13 +65,19 @@ export const userSlice = createSlice({
         isLogin: true,
       };
     },
+    isRecaptcha: (state, action) => {
+      state.user.recaptcha = action.payload;
+    },
     logOut: (state) => {
       state.user = {
         menuImageUrl: "",
         menuJson: "",
         phone: "",
+        email: "",
         twoPhaseAuth: true,
         userId: "",
+        planId: "",
+        recaptcha:true,
       };
       state.isLogin = false;
       localStorage.removeItem("token");
@@ -69,8 +90,12 @@ export const {
   initUser,
   updateUser,
   updateUserID,
+  updateEmail,
+  updatePlanID,
+  updateMenuJson,
   updateTwoPhaseAuth,
   logIn,
+  isRecaptcha,
   logOut,
 } = userSlice.actions;
 export const selectUser = (state: RootState) => state.user;

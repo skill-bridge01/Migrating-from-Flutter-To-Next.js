@@ -20,8 +20,11 @@ export interface IUser1 {
   menuImageUrl: string;
   menuJson: string;
   phone: string;
+  email: string;
   twoPhaseAuth: boolean;
   userId: string;
+  planId: string;
+  recaptcha:boolean;
 }
 
 export interface IUser {
